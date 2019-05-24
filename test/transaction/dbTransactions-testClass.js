@@ -10,9 +10,8 @@
 //   QuestionTransactions: QuestionTransactions
 // } = require('../../backend/src/dbTransactions');
 const assert = require('assert');
-import QuestionTransaction from '../../backend/src/dbTransactions2';
-let questionInstance = new QuestionTransaction();
-console.log('QQ', questionInstance);
+import Question from '../../backend/src/QuestionClass';
+let questionInstance = new Question();
 
 ('use strict');
 function questionsEqual(q1, q2) {
@@ -24,19 +23,14 @@ function questionsEqual(q1, q2) {
   );
 }
 
-describe('***222222* Question Database Tests ****', function() {
+describe('Question Database Tests', function() {
   before(async function(done) {
-    console.log('START');
     questionInstance.startDatabase('Test');
-    console.log('QQQQ', questionInstance.QuestionModel);
     done();
-    //  console.log('We are connected to test database!');
-    // TODO: Figure out if can delete in the before function
   });
 
   beforeEach(function() {
     // deleteAllQuestion returns a promise, which is why this works
-    console.log('beforeEach', questionInstance);
     return questionInstance.deleteAllQuestions();
   });
 
@@ -68,29 +62,29 @@ describe('***222222* Question Database Tests ****', function() {
     });
   });
 
-  //   describe('Basic CRUD tests', function() {
-  //     it('Insert and Delete same reord', async function() {
-  //       console.log('ID');
-  //       const createResult = await createQuestion(
-  //         'What is 5*5?',
-  //         '25',
-  //         '0, 10, 1'
-  //       );
-  //       const _id = createResult.data._id;
-  //       assert(_id, 'Id generated');
-  //       const deleteResult = await deleteQuestionById(_id);
-  //       assert(questionsEqual(createResult.data, deleteResult.data));
-  //     });
+  describe('Basic CRUD tests', function() {
+    it('Insert and Delete same reord', async function() {
+      console.log('ID');
+      const createResult = await questionInstance.createQuestion(
+        'What is 5*5?',
+        '25',
+        '0, 10, 1'
+      );
+      const _id = createResult.data._id;
+      assert(_id, 'Id generated');
+      const deleteResult = await questionInstance.deleteQuestionById(_id);
+      assert(questionsEqual(createResult.data, deleteResult.data));
+    });
 
-  //     it('Delete all questions', async function() {
-  //       await createQuestion('What is 5*5?', '25', '0, 10, 1');
-  //       const start_count = await getCountAllQuestions();
-  //       assert(start_count > 0);
-  //       const createResult = await deleteAllQuestions();
-  //       const end_count = await getCountAllQuestions();
-  //       assert(end_count == 0);
-  //     });
-  //   });
+    it('Delete all questions', async function() {
+      await questionInstance.createQuestion('What is 5*5?', '25', '0, 10, 1');
+      const start_count = await questionInstance.getCountAllQuestions();
+      assert(start_count > 0);
+      const createResult = await questionInstance.deleteAllQuestions();
+      const end_count = await questionInstance.getCountAllQuestions();
+      assert(end_count == 0);
+    });
+  });
 
   after(async function(done) {
     // TODO: Consider having flag if you want to clean up database

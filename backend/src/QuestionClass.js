@@ -8,7 +8,7 @@ const QuestionSchema = new Schema({
 });
 // let QuestionModel;
 
-export default class QuestionTransaction {
+export default class Question {
   constructor() {
     this.QuestionModel = undefined;
   }

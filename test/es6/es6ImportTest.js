@@ -1,3 +1,4 @@
+// TODO: Pretty this up
 import { simpleFunc } from './es6SimpleFunction';
 import QuestionTransaction from '../../backend/src/demoQuestionTransactionClass';
 // import { simpleClass } from './es6SimpleClassTest';
