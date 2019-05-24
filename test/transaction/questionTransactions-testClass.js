@@ -11,6 +11,7 @@
 // } = require('../../backend/src/dbTransactions');
 const assert = require('assert');
 import Question from '../../backend/src/QuestionClass';
+import { getJsonFromFile } from '../../backend/src/fileConversionUtil';
 let questionInstance = new Question();
 
 ('use strict');
@@ -34,18 +35,22 @@ describe('Question Database Tests', function() {
     return questionInstance.deleteAllQuestions();
   });
 
-  // describe('Test delimited text load', async function() {
-  //   it('Read delimited file into database', function(){
-  //     const fileName = '../data/test_questions_dump.csv';
-  //     await loadFile(fileName);
-  //     const questionCount = await getCountAllQuestions();
-  //     assert (questionCount > 0 );
-  //     const jsonContents = await getJsonFromFile(fileName);
-  //     const dbContents = await getQuestions();
-  //     assert (questionsContentsEqual(jsonContents,dbContents));
-  //   });
-
-  // });
+  describe('Test delimited text load', async function() {
+    it('Read delimited file into database', async function() {
+      const fileName = './data/test_questions_dump.csv';
+      const jsonContents = await getJsonFromFile(fileName);
+      console.log('Contents', jsonContents);
+      const firstQuestion = jsonContents[0];
+      console.log('First', firstQuestion);
+      assert(firstQuestion.questionText != undefined);
+      console.log('json', jsonContents);
+      // await questionInstance.loadFile(fileName);
+      // const questionCount = await questionInstance.getCountAllQuestions();
+      // assert (questionCount > 0 );
+      // const dbContents = await questionInstance.getQuestions();
+      // assert (questionsContentsEqual(jsonContents,dbContents));
+    });
+  });
 
   describe('*** Test beforeEach does what is expected', function() {
     it('*** Insert one record, ensure deleted before next text', async function() {

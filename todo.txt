@@ -1,6 +1,20 @@
-Get all tests working
-Rename questionTransactions to questionClass
 Change serverRequest to use new function
-Get file import to work
+Add more functionality
 Rename directory backend, server, etc to match terminology
 Refactor 'Question' to a constant
+Take care of warnings in test
+Review console.log
+Figure out how to exclude files from deployment (test)
+Figure out how to exclude files from test (simpleFunc)
+Replace all require with import??
+
+Questions:
+When do you use import {x} vs import x? 
+
+
+
+
+DONE !!
+Move to class !!
+Get all tests working
+Rename questionTransactions to questionClass

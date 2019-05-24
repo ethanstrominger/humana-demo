@@ -1,20 +1,17 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-// TODO: Use constant below
+const CSVToJSON = require('csvtojson');
+
+// TODO: Use QuestionSchema in getQuestionSchema function
 const QuestionSchema = new Schema({
   questionText: { type: String, required: true },
   answer: { type: String, required: true },
   distractors: { type: String, required: true }
 });
-// let QuestionModel;
 
 export default class Question {
   constructor() {
     this.QuestionModel = undefined;
-  }
-  static hello() {
-    console.log('Hello');
-    return 'hello';
   }
 
   async getQuestionSchema() {
@@ -22,22 +19,19 @@ export default class Question {
       let retVal = undefined;
       console.log('Here');
       try {
-        console.log('A');
         retVal = mongoose.model('Question');
-        console.log('M1', retVal);
         resolve(retVal);
       } catch (e) {
-        console.log('B', e.name);
         if (e.name === 'MissingSchemaError') {
-          console.log('C');
           let schema = new Schema({
             questionText: { type: String, required: true },
             answer: { type: String, required: true },
             distractors: { type: String, required: true }
           });
-          console.log('M2', retVal);
           retVal = mongoose.model('Question', schema);
           resolve(retVal);
+        } else {
+          throw e;
         }
       }
     });
@@ -48,8 +42,6 @@ export default class Question {
   }
 
   createQuestion(questionText, answer, distractors) {
-    // TODO: See if I can substitute variable above
-    // let data = mongoose.model('Questions', QuestionSchema)();
     let data = this.QuestionModel();
     data.questionText = questionText;
     data.answer = answer;
