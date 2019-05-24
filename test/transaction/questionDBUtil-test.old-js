@@ -1,0 +1,69 @@
+const {
+  questionSchema,
+  deleteAllRecords,
+  createQuestion
+} = require('../../src/questionDBUtil');
+const assert = require('assert');
+const mongoose = require('mongoose');
+
+('use strict');
+
+const QuestionModelForDBUtilTest = mongoose.model(
+  'QuestionaTestEnv',
+  questionSchema
+);
+
+describe('Database Tests', function() {
+  before(function(done) {
+    mongoose.connect('mongodb://localhost/ethanstromingerdb');
+    const db = mongoose.connection;
+    db.on('error', console.error.bind(console, 'connection error'));
+    db.once('open', function() {
+      console.log('We are connected to test database!');
+      done();
+      // TODO: Figure out if can delete in the before function
+      // QuestionModel.count({}, function(err, count) {
+      //   if (err) {
+      //     console.log('Error', err);
+      //   } else {
+      //     console.log('Number of docs before delete: ', count);
+      //   }
+      // });
+      // QuestionModel.remove({}, function(err, res) {
+      //     if (err) {
+      //       console.log(err);
+      //     } else {
+      //       console.log('Deleted', res);
+      //     }
+      //   });
+      //   QuestionModel.count({}, function(err, count) {
+      //     console.log('Number of docs 2: ', count);
+      //     console.log('DONE WITH DONE');
+      //   });
+    });
+  });
+
+  describe('Test DB Utils', function() {
+    // TODO: Figure out how to do an insert, then counts before and after
+    it('Deleting all records util', function(done) {
+      deleteAllRecords(QuestionModelForDBUtilTest, done);
+    });
+
+    it('New question saved', function(done) {
+      createQuestion(
+        QuestionModelForDBUtilTest,
+        'What is 7*7',
+        '49',
+        '0, 1, 14',
+        done
+      );
+    });
+  });
+
+  after(function(done) {
+    // TODO: Consider having flag if you want to clean up database
+    //  mongoose.connection.db.dropDatabase(function() {
+    mongoose.connection.close(done);
+    //  });
+  });
+});
