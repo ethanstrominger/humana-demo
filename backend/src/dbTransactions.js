@@ -21,7 +21,7 @@ function createQuestion(questionText, answer, distractors) {
   data.distractors = distractors;
   return new Promise((resolve, reject) => {
     data.save((err, doc) => {
-      retVal = returnRequestForDoc(err, doc);
+      const retVal = returnRequestForDoc(err, doc);
       resolve(retVal);
     });
   });
@@ -31,7 +31,7 @@ exports.createQuestion = createQuestion;
 async function deleteAllQuestions() {
   return new Promise((resolve, reject) => {
     QuestionModel.remove({}, (err, result) => {
-      retVal = returnResultOrThrowErr(err, result);
+      const retVal = returnResultOrThrowErr(err, result);
       resolve(retVal);
     });
   });
@@ -41,7 +41,7 @@ exports.deleteAllQuestions = deleteAllQuestions;
 async function deleteQuestionById(id) {
   return new Promise((resolve, reject) => {
     QuestionModel.findByIdAndRemove(id, (err, doc) => {
-      retVal = returnRequestForDoc(err, doc);
+      const retVal = returnRequestForDoc(err, doc);
       resolve(retVal);
     });
   });
@@ -51,7 +51,7 @@ exports.deleteQuestionById = deleteQuestionById;
 async function getCountAllQuestions() {
   return new Promise((resolve, reject) => {
     QuestionModel.count({}, (err, count) => {
-      retVal = returnResultOrThrowErr(err, count);
+      const retVal = returnResultOrThrowErr(err, count);
       resolve(retVal);
     });
   });
@@ -78,7 +78,7 @@ function returnRequestForDoc(err, doc) {
   } else if (!doc) {
     return { success: false, message: 'No record found.' };
   } else {
-    message = 'Doc ' + doc.questionText + ' processed.';
+    const message = 'Doc ' + doc.questionText + ' processed.';
     return { success: true, message: message, data: doc };
   }
 }

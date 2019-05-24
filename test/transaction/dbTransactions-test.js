@@ -8,7 +8,7 @@ const {
   loadFile: loadFile,
   getJsonFromFile: getJsonFromFile,
   QuestionTransactions: QuestionTransactions
-} = require('../../backend/dbTransactions');
+} = require('../../backend/src/dbTransactions');
 const assert = require('assert');
 // const mongoose = require('mongoose');
 
