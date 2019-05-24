@@ -15,7 +15,7 @@ exports.closeDatabase = closeDatabase;
 
 function createQuestion(questionText, answer, distractors) {
   // TODO: See if I can substitute variable above
-  let data = mongoose.model('Questions', QuestionSchema)();
+  let data = mongoose.model('Question', QuestionSchema)();
   data.questionText = questionText;
   data.answer = answer;
   data.distractors = distractors;

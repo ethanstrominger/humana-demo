@@ -1,73 +1,104 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+// TODO: Use constant below
 const QuestionSchema = new Schema({
   questionText: { type: String, required: true },
   answer: { type: String, required: true },
   distractors: { type: String, required: true }
 });
-let QuestionModel;
+// let QuestionModel;
 
 export default class QuestionTransaction {
+  constructor() {
+    this.QuestionModel = undefined;
+  }
   static hello() {
     console.log('Hello');
     return 'hello';
   }
 
-  static async closeDatabase(env) {
+  async getQuestionSchema() {
+    return new Promise((resolve, reject) => {
+      let retVal = undefined;
+      console.log('Here');
+      try {
+        console.log('A');
+        retVal = mongoose.model('Question');
+        console.log('M1', retVal);
+        resolve(retVal);
+      } catch (e) {
+        console.log('B', e.name);
+        if (e.name === 'MissingSchemaError') {
+          console.log('C');
+          let schema = new Schema({
+            questionText: { type: String, required: true },
+            answer: { type: String, required: true },
+            distractors: { type: String, required: true }
+          });
+          console.log('M2', retVal);
+          retVal = mongoose.model('Question', schema);
+          resolve(retVal);
+        }
+      }
+    });
+  }
+
+  async closeDatabase(env) {
     mongoose.connection.close();
   }
 
-  static createQuestion(questionText, answer, distractors) {
+  createQuestion(questionText, answer, distractors) {
     // TODO: See if I can substitute variable above
-    let data = mongoose.model('Questions', QuestionSchema)();
+    // let data = mongoose.model('Questions', QuestionSchema)();
+    let data = this.QuestionModel();
     data.questionText = questionText;
     data.answer = answer;
     data.distractors = distractors;
     return new Promise((resolve, reject) => {
       data.save((err, doc) => {
-        retVal = returnRequestForDoc(err, doc);
+        const retVal = this.returnRequestForDoc(err, doc);
         resolve(retVal);
       });
     });
   }
 
-  static async deleteAllQuestions() {
+  async deleteAllQuestions() {
     return new Promise((resolve, reject) => {
-      QuestionModel.remove({}, (err, result) => {
-        retVal = returnResultOrThrowErr(err, result);
+      this.QuestionModel.remove({}, (err, result) => {
+        const retVal = this.returnResultOrThrowErr(err, result);
         resolve(retVal);
       });
     });
   }
 
-  static async deleteQuestionById(id) {
+  async deleteQuestionById(id) {
     return new Promise((resolve, reject) => {
-      QuestionModel.findByIdAndRemove(id, (err, doc) => {
-        retVal = returnRequestForDoc(err, doc);
+      this.QuestionModel.findByIdAndRemove(id, (err, doc) => {
+        const retVal = this.returnRequestForDoc(err, doc);
         resolve(retVal);
       });
     });
   }
 
-  static async getCountAllQuestions() {
+  async getCountAllQuestions() {
     return new Promise((resolve, reject) => {
-      QuestionModel.count({}, (err, count) => {
-        retVal = returnResultOrThrowErr(err, count);
+      this.QuestionModel.count({}, (err, count) => {
+        const retVal = this.returnResultOrThrowErr(err, count);
         resolve(retVal);
       });
     });
   }
 
-  static getQuestions() {
+  getQuestions() {
     return new Promise((resolve, reject) => {
-      QuestionModel.find((err, doc) => {
-        retVal = returnRequestGeneric(err, doc);
+      this.QuestionModel.find((err, doc) => {
+        const retVal = this.returnRequestGeneric(err, doc);
         resolve(retVal);
       });
     });
   }
 
-  static returnRequestForDoc(err, doc) {
+  returnRequestForDoc(err, doc) {
     if (err) {
       return {
         success: false,
@@ -77,12 +108,12 @@ export default class QuestionTransaction {
     } else if (!doc) {
       return { success: false, message: 'No record found.' };
     } else {
-      message = 'Doc ' + doc.questionText + ' processed.';
+      const message = 'Doc ' + doc.questionText + ' processed.';
       return { success: true, message: message, data: doc };
     }
   }
 
-  static returnRequestGeneric(err, docs) {
+  returnRequestGeneric(err, docs) {
     if (err) {
       return {
         success: false,
@@ -90,12 +121,12 @@ export default class QuestionTransaction {
         errorDetail: err
       };
     } else {
-      message = 'Request processed.';
+      const message = 'Request processed.';
       return { success: true, message: message, data: docs };
     }
   }
 
-  static returnResultOrThrowErr(err, result) {
+  returnResultOrThrowErr(err, result) {
     if (err) {
       throw err;
     } else {
@@ -103,7 +134,8 @@ export default class QuestionTransaction {
     }
   }
 
-  static async startDatabase(env) {
+  async startDatabase(env) {
+    console.log('Starting database');
     const dbRoute = 'mongodb://localhost/ethanstromingerdb' + env;
     mongoose.connect(dbRoute, { useNewUrlParser: true });
     const db = mongoose.connection;
@@ -112,7 +144,15 @@ export default class QuestionTransaction {
       'error',
       console.error.bind(console, 'MongoDB connection error: ' + dbRoute)
     );
-    QuestionModel = mongoose.model('Question', QuestionSchema);
+    console.log('About to initiate model');
+    this.QuestionModel = await this.getQuestionSchema();
+    // try {
+    //   this.QuestionModel = mongoose.model('Question', QuestionSchema);
+    //   console.log('xxxx', this.QuestionModel);
+    // } catch (err) {
+    //   console.log('Error', err);
+    // }
+    console.log('Q', this.QuestionModel);
   }
 }
 console.log('XXXX');

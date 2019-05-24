@@ -49,8 +49,8 @@ describe('Question Database Tests', function() {
 
   // });
 
-  describe('Test beforeEach does what is expected', function() {
-    it('Insert one record, ensure deleted before next text', async function() {
+  describe('Repeat Test beforeEach does what is expected', function() {
+    it('Repeat Insert one record, ensure deleted before next text', async function() {
       const createResult = await createQuestion(
         'What is 5*5?',
         '25',
@@ -58,14 +58,14 @@ describe('Question Database Tests', function() {
       );
     });
 
-    it('Record count is 0 before start of a test', async function() {
+    it('Repeat Record count is 0 before start of a test', async function() {
       const start_count = await getCountAllQuestions();
       assert(start_count == 0);
     });
   });
 
-  describe('Basic CRUD tests', function() {
-    it('Insert and Delete same reord', async function() {
+  describe('Repeat Basic CRUD tests', function() {
+    it('Repeat Insert and Delete same reord', async function() {
       console.log('ID');
       const createResult = await createQuestion(
         'What is 5*5?',
@@ -78,7 +78,7 @@ describe('Question Database Tests', function() {
       assert(questionsEqual(createResult.data, deleteResult.data));
     });
 
-    it('Delete all questions', async function() {
+    it('Repeat Delete all questions', async function() {
       await createQuestion('What is 5*5?', '25', '0, 10, 1');
       const start_count = await getCountAllQuestions();
       assert(start_count > 0);

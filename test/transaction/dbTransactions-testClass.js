@@ -10,7 +10,9 @@
 //   QuestionTransactions: QuestionTransactions
 // } = require('../../backend/src/dbTransactions');
 const assert = require('assert');
-import QuestionTransaction from '../../backend/src/questionTransactionClass';
+import QuestionTransaction from '../../backend/src/dbTransactions2';
+let questionInstance = new QuestionTransaction();
+console.log('QQ', questionInstance);
 
 ('use strict');
 function questionsEqual(q1, q2) {
@@ -22,10 +24,11 @@ function questionsEqual(q1, q2) {
   );
 }
 
-describe('**** Question Database Tests ****', function() {
+describe('***222222* Question Database Tests ****', function() {
   before(async function(done) {
     console.log('START');
-    QuestionTransaction.startDatabase('Test');
+    questionInstance.startDatabase('Test');
+    console.log('QQQQ', questionInstance.QuestionModel);
     done();
     //  console.log('We are connected to test database!');
     // TODO: Figure out if can delete in the before function
@@ -33,7 +36,8 @@ describe('**** Question Database Tests ****', function() {
 
   beforeEach(function() {
     // deleteAllQuestion returns a promise, which is why this works
-    return QuestionTransaction.deleteAllQuestions();
+    console.log('beforeEach', questionInstance);
+    return questionInstance.deleteAllQuestions();
   });
 
   // describe('Test delimited text load', async function() {
@@ -51,7 +55,7 @@ describe('**** Question Database Tests ****', function() {
 
   describe('*** Test beforeEach does what is expected', function() {
     it('*** Insert one record, ensure deleted before next text', async function() {
-      const createResult = await QuestionTransaction.createQuestion(
+      const createResult = await questionInstance.createQuestion(
         'What is 5*5?',
         '25',
         '0, 10, 1'
@@ -59,7 +63,7 @@ describe('**** Question Database Tests ****', function() {
     });
 
     it('*** Record count is 0 before start of a test', async function() {
-      const start_count = await QuestionTransaction.getCountAllQuestions();
+      const start_count = await questionInstance.getCountAllQuestions();
       assert(start_count == 0);
     });
   });
@@ -91,7 +95,7 @@ describe('**** Question Database Tests ****', function() {
   after(async function(done) {
     // TODO: Consider having flag if you want to clean up database
     // TODO: mongoose.connection.db.dropDatabase(function() {
-    QuestionTransaction.closeDatabase();
+    questionInstance.closeDatabase();
     done();
   });
 });
