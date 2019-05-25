@@ -1,3 +1,5 @@
+import Question from '../../backend/src/QuestionClass';
+let questionInstance = new Question();
 const {
   deleteQuestionById,
   createQuestion,
@@ -19,7 +21,7 @@ const API_PORT = 3001;
 const app = express();
 app.use(cors());
 const router = express.Router();
-startDatabase('prod');
+questionInstance.startDatabase('prod');
 // TODO: Understand
 // bodyParser, parses the request body to be a readable json format
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -28,18 +30,18 @@ app.use(bodyParser.json());
 app.use(logger('dev'));
 
 router.get('/getData', async (req, res) => {
-  retval = await getQuestions();
+  const retVal = await questionInstance.getQuestions();
   return res.json(retVal);
 });
 
 // xmlhttp delete does not send body
 router.patch(urlPatchDelete, async (req, res) => {
-  retVal = await deleteQuestionById(req.body.id);
+  const retVal = await questionInstance.deleteQuestionById(req.body.id);
   return res.json(retVal);
 });
 
 router.post(urlPostCreate, async (req, res) => {
-  retVal = await createQuestion(
+  const retVal = await questionInstance.createQuestion(
     req.body.questionText,
     req.body.answer,
     req.body.distractors
