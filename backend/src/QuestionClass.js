@@ -1,3 +1,5 @@
+import { getJsonFromFile } from '../../backend/src/fileConversionUtil';
+
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const CSVToJSON = require('csvtojson');
@@ -14,10 +16,20 @@ export default class Question {
     this.QuestionModel = undefined;
   }
 
+  async bulkCreate(questionsJson) {
+    // TODO: Clarify when to use QuestionModel vs QuestionModel()
+    let data = this.QuestionModel;
+    return new Promise((resolve, reject) => {
+      data.insertMany(questionsJson, (err, doc) => {
+        const retVal = this.returnRequestForDoc(err, doc);
+        resolve(retVal);
+      });
+    });
+  }
+
   async getQuestionSchema() {
     return new Promise((resolve, reject) => {
       let retVal = undefined;
-      console.log('Here');
       try {
         retVal = mongoose.model('Question');
         resolve(retVal);
@@ -51,6 +63,15 @@ export default class Question {
         const retVal = this.returnRequestForDoc(err, doc);
         resolve(retVal);
       });
+    });
+  }
+
+  async createQuestionsFromJsonFile(fileName) {
+    const json = await getJsonFromFile(fileName);
+    console.log('json', json);
+    const retVal = await this.bulkCreate(json);
+    return new Promise((resolve, reject) => {
+      resolve(retVal);
     });
   }
 
@@ -136,15 +157,6 @@ export default class Question {
       'error',
       console.error.bind(console, 'MongoDB connection error: ' + dbRoute)
     );
-    console.log('About to initiate model');
     this.QuestionModel = await this.getQuestionSchema();
-    // try {
-    //   this.QuestionModel = mongoose.model('Question', QuestionSchema);
-    //   console.log('xxxx', this.QuestionModel);
-    // } catch (err) {
-    //   console.log('Error', err);
-    // }
-    console.log('Q', this.QuestionModel);
   }
 }
-console.log('XXXX');

@@ -1,5 +1,4 @@
 const csvtojson = require('csvtojson');
-const converter = csvtojson({ delimiter: '|' });
 export { getJsonFromFile };
 
 function standardizeFieldNamesOfJson(json) {
@@ -9,9 +8,12 @@ function standardizeFieldNamesOfJson(json) {
   return returnJson;
 }
 async function getJsonFromFile(fileName) {
+  const converter = csvtojson({ delimiter: '|' });
   const fileJson = await converter.fromFile(fileName);
-  const jsonWithStandardFieldNames = standardizeFieldNamesOfJson(fileJson);
-  return jsonWithStandardFieldNames;
+  return new Promise((resolve, reject) => {
+    const jsonWithStandardFieldNames = standardizeFieldNamesOfJson(fileJson);
+    resolve(jsonWithStandardFieldNames);
+  });
 }
 
 async function insertJsonFromFile() {}

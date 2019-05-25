@@ -15,6 +15,30 @@ import { getJsonFromFile } from '../../backend/src/fileConversionUtil';
 let questionInstance = new Question();
 
 ('use strict');
+
+function makeQuestionJson(questionText, answer, distractors) {
+  return {
+    questionText: questionText,
+    answer: answer,
+    distractors: distractors
+  };
+}
+
+function makeQuestionJsonArray(questionValuesArray) {
+  const retValArray = [];
+  let index = 0;
+  while (index < questionValuesArray.length) {
+    const arrayElem = questionValuesArray[index];
+    const questionText = arrayElem[0];
+    const answer = arrayElem[1];
+    const distractors = arrayElem[2];
+    const questionJson = makeQuestionJson(questionText, answer, distractors);
+    retValArray.push(questionJson);
+    index = index + 1;
+  }
+  return retValArray;
+}
+
 function questionsEqual(q1, q2) {
   return (
     String.toString(q1._id) == String.toString(q2.__id) &&
@@ -36,18 +60,36 @@ describe('Question Database Tests', function() {
   });
 
   describe('Test delimited text load', async function() {
+    it('Convert question dump into json', async function() {
+      const fileName = './data/test_questions_dump.csv';
+      const jsonContents = await getJsonFromFile(fileName);
+      const firstQuestion = jsonContents[0];
+      assert(firstQuestion.questionText != undefined);
+      assert(firstQuestion.answer != undefined);
+      assert(firstQuestion.distractors != undefined);
+    });
+
+    it('Insert array of json into database', async function() {
+      const bulkJson = makeQuestionJsonArray([
+        ['What is 1*7? ', '7', '8, 6, 17'],
+        ['What is 2*7? ', '14', '9, 5, 27'],
+        ['What is 3*7? ', '21', '10, 4, 37']
+      ]);
+      const result = await questionInstance.bulkCreate(bulkJson);
+      const questionCount = await questionInstance.getCountAllQuestions();
+      assert(questionCount == 3);
+    });
+
     it('Read delimited file into database', async function() {
       const fileName = './data/test_questions_dump.csv';
       const jsonContents = await getJsonFromFile(fileName);
-      console.log('Contents', jsonContents);
-      const firstQuestion = jsonContents[0];
-      console.log('First', firstQuestion);
-      assert(firstQuestion.questionText != undefined);
-      console.log('json', jsonContents);
-      // await questionInstance.loadFile(fileName);
-      // const questionCount = await questionInstance.getCountAllQuestions();
-      // assert (questionCount > 0 );
-      // const dbContents = await questionInstance.getQuestions();
+      // console.log('Json Contents', jsonContents);
+      const retval = await questionInstance.createQuestionsFromJsonFile(
+        fileName
+      );
+      const questionCount = await questionInstance.getCountAllQuestions();
+      assert(questionCount > 0);
+      assert.equal(questionCount, jsonContents.length);
       // assert (questionsContentsEqual(jsonContents,dbContents));
     });
   });
@@ -69,7 +111,6 @@ describe('Question Database Tests', function() {
 
   describe('Basic CRUD tests', function() {
     it('Insert and Delete same reord', async function() {
-      console.log('ID');
       const createResult = await questionInstance.createQuestion(
         'What is 5*5?',
         '25',

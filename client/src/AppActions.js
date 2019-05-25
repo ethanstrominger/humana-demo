@@ -26,6 +26,7 @@ export async function deleteByIdReqest(idToDelete) {
 }
 
 export async function createQuestionRequest(questionText, answer, distractors) {
+  // TODO: Make into a function?
   const json = {
     questionText: questionText,
     answer: answer,
