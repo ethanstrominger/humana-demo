@@ -2,7 +2,6 @@ import { getJsonFromFile } from '../../backend/src/fileConversionUtil';
 
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const CSVToJSON = require('csvtojson');
 
 // TODO: Use QuestionSchema in getQuestionSchema function
 const QuestionSchema = new Schema({
@@ -35,11 +34,12 @@ export default class Question {
         resolve(retVal);
       } catch (e) {
         if (e.name === 'MissingSchemaError') {
-          let schema = new Schema({
-            questionText: { type: String, required: true },
-            answer: { type: String, required: true },
-            distractors: { type: String, required: true }
-          });
+          let schema = QuestionSchema;
+          // let schema = new Schema({
+          //   questionText: { type: String, required: true },
+          //   answer: { type: String, required: true },
+          //   distractors: { type: String, required: true }
+          // });
           retVal = mongoose.model('Question', schema);
           resolve(retVal);
         } else {
