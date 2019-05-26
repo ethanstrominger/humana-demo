@@ -1,4 +1,11 @@
-Change serverRequest to use new function
+Write tests for Get
+Create Get that takes filter
+Limit to 10
+Add fetch to UI
+Change delete to only delete fetched records
+Write tests for end points
+Create an update?
+
 Add more functionality
 Rename directory backend, server, etc to match terminology
 Refactor 'Question' to a constant
@@ -18,3 +25,4 @@ DONE !!
 Move to class !!
 Get all tests working
 Rename questionTransactions to questionClass
+Change serverRequest to use new function
