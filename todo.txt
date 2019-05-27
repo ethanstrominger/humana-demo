@@ -1,6 +1,3 @@
-Add init button to load data
-Readme.md - point to developer and original Refactor
-Developer - add info on how to start services, how to test, primary libraries - mongoose
 
 List files to load
 Test for small load
@@ -38,4 +35,8 @@ Figure out how to exclude files from test (simpleFunc)
 Add fetch to UI
 Change delete to only delete fetched records
 Limit to 10 and show number fetched
+Add init button to load data
+Readme.md - point to developer and original Refactor
+Developer - add info on how to start services, how to test, primary libraries - mongoose
+
 
