@@ -15,7 +15,7 @@ class App extends Component {
     answerToAdd: null,
     distractorsToAdd: null,
     fetchQuestionContains: null,
-    idToDelete: null
+    idsToDelete: null
   };
 
   showResponse = response => {
@@ -29,7 +29,7 @@ class App extends Component {
     }
   };
 
-  getDataFromDb = async questionTextContains => {
+  getDataFromDb = async () => {
     const questionData = await getQuestionDataToRender(
       this.state.fetchQuestionContains
     );
@@ -47,15 +47,12 @@ class App extends Component {
     this.getDataFromDb();
   };
 
-  handleDeleteById = async idToDelete => {
-    // let jsonString = JSON.stringify({ id: idToDelete });
-    console.log('DELETING');
+  handleDeleteDisplayedRecs = async () => {
     let data = this.state.data;
     let idsToDelete = [];
-    for (let x=0; x < data.length; x++) {
+    for (let x = 0; x < data.length; x++) {
       idsToDelete.push(data[x]._id);
     }
-    console.log('Sending',idsToDelete);
     let response = await deleteByIdReqest(idsToDelete);
     this.showResponse(response);
     this.getDataFromDb();
@@ -69,7 +66,7 @@ class App extends Component {
     const titleStyle = { color: 'blue' };
     return (
       <div>
-        <ul>
+        <ul id='Display-records'>
           {data.length <= 0
             ? 'NO DB ENTRIES YET'
             : data.map(dat => (
@@ -82,52 +79,55 @@ class App extends Component {
                 </p>
               ))}
         </ul>
-        <div style={{ padding: '10px' }}>
+        <div id='Fetch-delete' style={{ padding: '10px' }}>
           <input
+            placeholder='Question text contains'
             type='text'
             onChange={e =>
               this.setState({ fetchQuestionContains: e.target.value })
             }
-            placeholder='Question text contains'
             style={{ width: '200px' }}
           />
-          <button onClick={() => this.getDataFromDb()}>FETCH</button>
+          <button
+            id='Fetch-del.FetchButton'
+            onClick={() => this.getDataFromDb()}
+          >
+            FETCH
+          </button>
+          <button
+            id='Fetch-del.DeleteButton'
+            onClick={() =>
+              this.handleDeleteDisplayedRecs(this.state.idsToDelete)
+            }
+          >
+            DELETE
+          </button>
         </div>
-        <div style={{ padding: '10px' }}>
+        <div id='Add' style={{ padding: '10px' }}>
           <input
+            id='Add.question-text'
+            placeholder='Question Text to Add'
             type='text'
             onChange={e => this.setState({ questionTextToAdd: e.target.value })}
-            placeholder='Question Text to Add'
             style={{ width: '200px' }}
           />
           <input
+            id='Add.answer'
+            placeholder='Answer'
             type='text'
             onChange={e => this.setState({ answerToAdd: e.target.value })}
-            placeholder='Answer'
             style={{ width: '200px' }}
           />
           <input
+            id='Add.distractors'
+            placeholder='Distractors'
             type='text'
             onChange={e => this.setState({ distractorsToAdd: e.target.value })}
-            placeholder='distractorsToAdd'
             style={{ width: '200px' }}
           />
           <button onClick={() => this.handleCreateQuestion()}>ADD</button>
         </div>
-        <div style={{ padding: '10px' }}>
-          <input
-            type='text'
-            style={{ width: '200px' }}
-            onChange={e => this.setState({ idToDelete: e.target.value })}
-            placeholder='put id of item to delete here'
-          />
-          <button onClick={() => this.handleDeleteById(this.state.idToDelete)}>
-            DELETE
-          </button>
-        </div>
-        <div style={{ padding: '10px' }}>
-          <button onClick={() => this.getDataFromDb()}>FETCH DATA</button>
-        </div>
+        <div style={{ padding: '10px' }} />
       </div>
     );
   }

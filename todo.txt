@@ -1,4 +1,3 @@
-Clean up UI
 Limit to 10 and show number fetched
 Add init button to load data
 Readme.md - point to developer and original Refactor
@@ -17,6 +16,7 @@ Move all constants into a separate file
 Review console.log
 Figure out how to exclude files from deployment (test)
 Replace all require with import??
+Clean up UI
 
 Write tests for Get
 
