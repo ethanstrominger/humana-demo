@@ -3,11 +3,9 @@ Delete all
 Add functionality to specify table in URL
 Show message if http request fails
 Write tests for end points?
-Create an update?
 
 Add test for reaching Limit
 Code coverage
-Rename get to fetch
 Rename directory backend, server, etc to match terminology
 Refactor 'Question' to a constant
 Move all constants into a separate file

@@ -1,6 +1,6 @@
-import Question from '../../backend/src/QuestionClass';
+import Question from './QuestionClass';
 let questionInstance = new Question();
-import { getDataFiles } from '../../backend/src/fileUtil';
+import { getDataFiles } from './fileUtil';
 const express = require('express');
 var cors = require('cors');
 const bodyParser = require('body-parser');

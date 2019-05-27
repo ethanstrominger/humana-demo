@@ -59,7 +59,7 @@ From root directory:
 
 From backend/src directory:
 
-`babel-node serverRequests.js`<br/>
+`babel-node backendRequests.js`<br/>
 
 ## How to Run Tests
 
