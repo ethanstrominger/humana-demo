@@ -13,6 +13,7 @@ class App extends Component {
   state = {
     hasDataBeenQueried: 'N',
     filenameToLoad: null,
+    isFilesListed: 'N',
     displayData: [],
     fetchDataCount: 0,
     id: 0,
@@ -43,13 +44,12 @@ class App extends Component {
     let questionDataDisplay = questionData.slice(0, MAX_QUESTIONS_TO_DISPLAY);
     this.setState({ displayData: questionDataDisplay });
     this.setState({ fetchDataCount: questionData.length });
-    this.setState({ hasDataBeenQueried: 'Y' });
   };
 
   handleListDataFiles = async () => {
     const response = await getFileListRequest(this.state.filenameToLoad);
     console.log(response);
-    this.setState({ backendFileList: response});
+    this.setState({ backendFileList: response });
   };
 
   handleLoadFromFile = async () => {
@@ -82,6 +82,8 @@ class App extends Component {
   render() {
     if (this.state.hasDataBeenQueried === 'N') {
       this.handleGetDataFromDb();
+      this.handleListDataFiles();
+      this.setState({ hasDataBeenQueried: 'Y' });
     }
     const displayData = this.state.displayData;
     const titleStyle = { color: 'blue' };
@@ -182,12 +184,11 @@ class App extends Component {
           </button>
         </div>
         <ul id='Display-files'>
-          { backendFileList.map(dat => (
-                <p style={{ 'line-height': 1.0 }} key={dat}>
-                  <span style={titleStyle}> file: </span>
-                  {dat}}{dat.distractors}
-                </p>
-              ))}
+          {backendFileList.map(dat => (
+            <p style={{ 'line-height': 1.0 }} key={dat}>
+              {dat}
+            </p>
+          ))}
         </ul>
       </div>
     );
