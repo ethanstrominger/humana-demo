@@ -83,9 +83,9 @@ export default class Question {
     });
   }
 
-  async deleteQuestionById(id) {
+  async deleteQuestionsByIds(ids) {
     return new Promise((resolve, reject) => {
-      this.QuestionModel.findByIdAndRemove(id, (err, doc) => {
+      this.QuestionModel.deleteMany({_id: ids}, (err, doc) => {
         const retVal = this.returnRequestForDoc(err, doc);
         resolve(retVal);
       });

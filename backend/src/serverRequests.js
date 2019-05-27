@@ -5,9 +5,8 @@ var cors = require('cors');
 const bodyParser = require('body-parser');
 const logger = require('morgan');
 const urlPatchDelete = '/patchDeleteQ';
-const urlPutUpdate = '/putUpdateQ';
 const urlPostCreate = '/postCreateQ';
-const urlGetGet = '/getGetQ';
+const urlPutFetch = '/putFetchQ';
 exports.urlPatchDelete = urlPatchDelete;
 
 const API_PORT = 3001;
@@ -22,14 +21,15 @@ app.use(bodyParser.json());
 // for logging
 app.use(logger('dev'));
 
-router.get('/getData', async (req, res) => {
-  const retVal = await questionInstance.getQuestions();
+router.post(urlPutFetch, async (req, res) => {
+  const retVal = await questionInstance.getQuestions(req.body);
   return res.json(retVal);
 });
 
 // xmlhttp delete does not send body
 router.patch(urlPatchDelete, async (req, res) => {
-  const retVal = await questionInstance.deleteQuestionById(req.body.id);
+  console.log('ids', req.body);
+  const retVal = await questionInstance.deleteQuestionsByIds(req.body.id);
   return res.json(retVal);
 });
 

@@ -1,8 +1,7 @@
 // TODO: Put this in common f ile
 const urlPatchDelete = '/patchDeleteQ';
-const urlPutUpdate = '/putUpdateQ';
 const urlPostCreate = '/postCreateQ';
-const urlGetGet = '/getGetQ';
+const urlPutFetch = '/putFetchQ';
 
 async function sendRequest(method, urlEnding, json) {
   const jsonString = JSON.stringify(json);
@@ -19,14 +18,13 @@ async function sendRequest(method, urlEnding, json) {
   });
 }
 
-export async function deleteByIdReqest(idToDelete) {
-  const json = { id: idToDelete };
+export async function deleteByIdReqest(idsToDelete) {
+  const json = { id: idsToDelete };
   const response = await sendRequest('PATCH', urlPatchDelete, json);
   return response;
 }
 
 export async function createQuestionRequest(questionText, answer, distractors) {
-  // TODO: Make into a function?
   const json = {
     questionText: questionText,
     answer: answer,
@@ -37,14 +35,8 @@ export async function createQuestionRequest(questionText, answer, distractors) {
 }
 
 // TODO: Can this use sendRequest also?
-export async function getQuestionDataToRender() {
-  const Http = new XMLHttpRequest();
-  Http.open('GET', 'http://localhost:3001/api/getData');
-  await Http.send();
-  return new Promise((resolve, reject) => {
-    Http.onload = e => {
-      const questionData = JSON.parse(Http.responseText)['data'];
-      resolve(questionData);
-    };
-  });
+export async function getQuestionDataToRender(questionTextContains) {
+  const json = { questionTextContains: questionTextContains };
+  const response = await sendRequest('POST', urlPutFetch, json);
+  return response['data'];
 }

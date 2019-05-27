@@ -4,7 +4,7 @@ import {
   getQuestionDataToRender,
   createQuestionRequest,
   deleteByIdReqest
-} from './AppActions';
+} from './AppRequests';
 class App extends Component {
   state = {
     hasDataBeenQueried: 'N',
@@ -14,10 +14,8 @@ class App extends Component {
     questionTextToAdd: null,
     answerToAdd: null,
     distractorsToAdd: null,
-    intervalIsSet: false,
-    idToDelete: null,
-    idToUpdate: null,
-    objectToUpdate: null
+    fetchQuestionContains: null,
+    idToDelete: null
   };
 
   showResponse = response => {
@@ -31,21 +29,19 @@ class App extends Component {
     }
   };
 
-  getDataFromDb = async () => {
-    const questionData = await getQuestionDataToRender();
+  getDataFromDb = async questionTextContains => {
+    const questionData = await getQuestionDataToRender(
+      this.state.fetchQuestionContains
+    );
     this.setState({ data: questionData });
     this.setState({ hasDataBeenQueried: 'Y' });
   };
 
-  handleCreateQuestion = async (
-    questionTextToAdd,
-    answerToAdd,
-    distractorsToAdd
-  ) => {
+  handleCreateQuestion = async () => {
     let response = await createQuestionRequest(
-      questionTextToAdd,
-      answerToAdd,
-      distractorsToAdd
+      this.state.questionTextToAdd,
+      this.state.answerToAdd,
+      this.state.distractorsToAdd
     );
     this.showResponse(response);
     this.getDataFromDb();
@@ -53,7 +49,14 @@ class App extends Component {
 
   handleDeleteById = async idToDelete => {
     // let jsonString = JSON.stringify({ id: idToDelete });
-    let response = await deleteByIdReqest(idToDelete);
+    console.log('DELETING');
+    let data = this.state.data;
+    let idsToDelete = [];
+    for (let x=0; x < data.length; x++) {
+      idsToDelete.push(data[x]._id);
+    }
+    console.log('Sending',idsToDelete);
+    let response = await deleteByIdReqest(idsToDelete);
     this.showResponse(response);
     this.getDataFromDb();
   };
@@ -82,6 +85,17 @@ class App extends Component {
         <div style={{ padding: '10px' }}>
           <input
             type='text'
+            onChange={e =>
+              this.setState({ fetchQuestionContains: e.target.value })
+            }
+            placeholder='Question text contains'
+            style={{ width: '200px' }}
+          />
+          <button onClick={() => this.getDataFromDb()}>FETCH</button>
+        </div>
+        <div style={{ padding: '10px' }}>
+          <input
+            type='text'
             onChange={e => this.setState({ questionTextToAdd: e.target.value })}
             placeholder='Question Text to Add'
             style={{ width: '200px' }}
@@ -98,17 +112,7 @@ class App extends Component {
             placeholder='distractorsToAdd'
             style={{ width: '200px' }}
           />
-          <button
-            onClick={() =>
-              this.handleCreateQuestion(
-                this.state.questionTextToAdd,
-                this.state.answerToAdd,
-                this.state.distractorsToAdd
-              )
-            }
-          >
-            ADD
-          </button>
+          <button onClick={() => this.handleCreateQuestion()}>ADD</button>
         </div>
         <div style={{ padding: '10px' }}>
           <input

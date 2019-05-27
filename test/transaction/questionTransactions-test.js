@@ -27,7 +27,7 @@ describe('Question Database Tests', function() {
   });
 
   describe('Test delimited text load', async function() {
-    it('Convert question dump into json', async function() {
+    it('[GETJSONFROMFILE] Convert question dump into json', async function() {
       const fileName = './data/test_questions_dump.csv';
       const jsonContents = await getJsonFromFile(fileName);
       const firstQuestion = jsonContents[0];
@@ -36,7 +36,7 @@ describe('Question Database Tests', function() {
       assert(firstQuestion.distractors != undefined);
     });
 
-    it('Insert array of json into database', async function() {
+    it('[CREATEBULK][COUNTALL] Insert array of json into database', async function() {
       const bulkJson = makeQuestionJsonArray([
         ['What is 1*7? ', '7', '8, 6, 17'],
         ['What is 2*7? ', '14', '9, 5, 27'],
@@ -47,7 +47,7 @@ describe('Question Database Tests', function() {
       assert(questionCount == 3);
     });
 
-    it('Read delimited file into database', async function() {
+    it('[CREATEFROMJSONFILE] Read delimited file into database', async function() {
       const fileName = './data/test_questions_dump.csv';
       const jsonContents = await getJsonFromFile(fileName);
       const retval = await questionInstance.createQuestionsFromJsonFile(
@@ -60,8 +60,8 @@ describe('Question Database Tests', function() {
     });
   });
 
-  describe('*** Test beforeEach does what is expected', function() {
-    it('*** Insert one record, ensure deleted before next text', async function() {
+  describe('Test beforeEach does what is expected', function() {
+    it('[CREATE] Insert one record, in next test, ensure deleted', async function() {
       const createResult = await questionInstance.createQuestion(
         'What is 5*5?',
         '25',
@@ -69,44 +69,69 @@ describe('Question Database Tests', function() {
       );
     });
 
-    it('*** Record count is 0 before start of a test', async function() {
-      const start_count = await questionInstance.getCountAllQuestions();
-      assert(start_count == 0);
+    it('[GET] Record count is 0 before start of a test', async function() {
+      const startCount = await questionInstance.getCountAllQuestions();
+      assert(startCount == 0);
     });
   });
 
   describe('Basic CRUD tests', function() {
-    it('Insert and Delete same reord', async function() {
+    it('[CREATE][DELETE] Create and delete same reord', async function() {
       const createResult = await questionInstance.createQuestion(
         'What is 5*5?',
         '25',
         '0, 10, 1'
       );
       const _id = createResult.data._id;
-      assert(_id, 'Id generated');
-      const deleteResult = await questionInstance.deleteQuestionById(_id);
-      assert(questionsEqual(createResult.data, deleteResult.data));
+      const startCount = await questionInstance.getCountAllQuestions();
+      assert.equal(startCount, 1);
+      const deleteResult = await questionInstance.deleteQuestionsByIds([_id]);
+      const endCount = await questionInstance.getCountAllQuestions();
+      assert.equal(endCount, 0);
     });
 
-    it('Create and get questions', async function() {
+    it('[CREATE][DELETE][GET] Create 3 and delete 2', async function() {
+      const createResult1 = await questionInstance.createQuestion(
+        'What is 5*5?',
+        '25',
+        '0, 10, 1'
+      );
+      const createResult2 = await questionInstance.createQuestion(
+        'What is 6*5?',
+        '25',
+        '0, 10, 1'
+      );
+      const createResult3 = await questionInstance.createQuestion(
+        'What is 7*5?',
+        '25',
+        '0, 10, 1'
+      );
+      const _id1 = createResult1.data._id;
+      const _id2 = createResult2.data._id;
+      const _id3 = createResult3.data._id;
+      const startCount = await questionInstance.getCountAllQuestions();
+      assert.equal(startCount, 3);
+      const deleteResult = await questionInstance.deleteQuestionsByIds([
+        _id1,
+        _id3
+      ]);
+      const endCount = await questionInstance.getCountAllQuestions();
+      assert.equal(endCount, 1);
+      const getResults = await questionInstance.getQuestions();
+      const data = getResults.data;
+      assert(data[0]._id.equals(_id2));
+    });
+
+    it('[CREATE][DELETEALL]Create and Delete All Questions', async function() {
       await questionInstance.createQuestion('What is 5*5?', '25', '0, 10, 1');
-      const start_count = await questionInstance.getCountAllQuestions();
-      assert(start_count > 0);
+      const startCount = await questionInstance.getCountAllQuestions();
+      assert(startCount > 0);
       const createResult = await questionInstance.deleteAllQuestions();
-      const end_count = await questionInstance.getCountAllQuestions();
-      assert(end_count == 0);
+      const endCount = await questionInstance.getCountAllQuestions();
+      assert(endCount == 0);
     });
 
-    it('Delete all questions', async function() {
-      await questionInstance.createQuestion('What is 5*5?', '25', '0, 10, 1');
-      const start_count = await questionInstance.getCountAllQuestions();
-      assert(start_count > 0);
-      const createResult = await questionInstance.deleteAllQuestions();
-      const end_count = await questionInstance.getCountAllQuestions();
-      assert(end_count == 0);
-    });
-
-    it('Get test: Insert array of json into database, then get', async function() {
+    it('[CREATEBULK][GET] Get test: Insert array of json into database, then get', async function() {
       const bulkJson = makeQuestionJsonArray([
         ['What is 1*7? ', '7', '8, 6, 17'],
         ['What is 2*7? ', '14', '9, 5, 27'],
@@ -120,7 +145,7 @@ describe('Question Database Tests', function() {
     });
 
     // WIP
-    it('xxxxxxxxxxGet test with filter: Insert array of json into database, then get', async function() {
+    it('[CREATEBULK][GET] Get test with filter: Insert array of json into database, then get', async function() {
       const bulkJson = makeQuestionJsonArray([
         ['What is 1*7? ', '7', '8, 6, 17'],
         ['What is 2*7? ', '14', '9, 5, 27'],
