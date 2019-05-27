@@ -1,7 +1,6 @@
-
-List files to load
 Test for small load
-Add functionality to specify database in URL
+Delete all
+Add functionality to specify table in URL
 Show message if http request fails
 Write tests for end points?
 Create an update?
@@ -16,6 +15,7 @@ Review console.log
 Figure out how to exclude files from deployment (test)
 Replace all require with import??
 Clean up UI
+
 
 Write tests for Get
 
@@ -39,4 +39,5 @@ Add init button to load data
 Readme.md - point to developer and original Refactor
 Developer - add info on how to start services, how to test, primary libraries - mongoose
 
+List files to load
 

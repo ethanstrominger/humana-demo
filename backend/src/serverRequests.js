@@ -36,7 +36,6 @@ router.post(urlPutFetch, async (req, res) => {
 
 // xmlhttp delete does not send body
 router.patch(urlPatchDelete, async (req, res) => {
-  console.log('ids', req.body);
   const retVal = await questionInstance.deleteQuestionsByIds(req.body.id);
   return res.json(retVal);
 });

@@ -73,7 +73,6 @@ export default class Question {
     const result = await this.deleteAllQuestions();
     const retVal = await this.bulkCreate(json);
     return new Promise((resolve, reject) => {
-      console.log('Retval', retVal);
       resolve(retVal);
     });
   }

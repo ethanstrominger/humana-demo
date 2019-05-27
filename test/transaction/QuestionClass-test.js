@@ -28,7 +28,7 @@ describe('Question Database Tests', function() {
 
   describe('Test delimited text load', async function() {
     it('[GETJSONFROMFILE] Convert question dump into json', async function() {
-      const fileName = './data/test_questions_dump.csv';
+      const fileName = 'test_questions_dump.csv';
       const jsonContents = await getJsonFromFile(fileName);
       const firstQuestion = jsonContents[0];
       assert(firstQuestion.questionText != undefined);
@@ -48,7 +48,7 @@ describe('Question Database Tests', function() {
     });
 
     it('[CREATEFROMJSONFILE] Read delimited file into database', async function() {
-      const fileName = './data/test_questions_dump.csv';
+      const fileName = 'test_questions_dump.csv';
       const jsonContents = await getJsonFromFile(fileName);
       const retval = await questionInstance.createQuestionsFromJsonFile(
         fileName
