@@ -68,7 +68,6 @@ export default class Question {
 
   async createQuestionsFromJsonFile(fileName) {
     const json = await getJsonFromFile(fileName);
-    console.log('json', json);
     const retVal = await this.bulkCreate(json);
     return new Promise((resolve, reject) => {
       resolve(retVal);
@@ -77,7 +76,7 @@ export default class Question {
 
   async deleteAllQuestions() {
     return new Promise((resolve, reject) => {
-      this.QuestionModel.remove({}, (err, result) => {
+      this.QuestionModel.deleteMany({}, (err, result) => {
         const retVal = this.returnResultOrThrowErr(err, result);
         resolve(retVal);
       });
@@ -95,7 +94,7 @@ export default class Question {
 
   async getCountAllQuestions() {
     return new Promise((resolve, reject) => {
-      this.QuestionModel.count({}, (err, count) => {
+      this.QuestionModel.countDocuments({}, (err, count) => {
         const retVal = this.returnResultOrThrowErr(err, count);
         resolve(retVal);
       });
@@ -157,7 +156,11 @@ export default class Question {
   async startDatabase(env) {
     console.log('Starting database');
     const dbRoute = 'mongodb://localhost/ethanstromingerdb' + env;
-    mongoose.connect(dbRoute, { useNewUrlParser: true });
+    mongoose.connect(dbRoute, {
+      useNewUrlParser: true,
+      useFindAndModify: false,
+      useCreateIndex: true
+    });
     const db = mongoose.connection;
     db.once('open', () => console.log('connected to the database ' + dbRoute));
     db.on(
