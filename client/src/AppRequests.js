@@ -2,6 +2,7 @@
 const urlPatchDelete = '/patchDeleteQ';
 const urlPostCreate = '/postCreateQ';
 const urlPutFetch = '/putFetchQ';
+const urlPostLoad = '/postLoadQ';
 
 async function sendRequest(method, urlEnding, json) {
   const jsonString = JSON.stringify(json);
@@ -16,6 +17,12 @@ async function sendRequest(method, urlEnding, json) {
       resolve(responseText);
     };
   });
+}
+
+export async function loadFromFileRequest(filename) {
+  const json = { filename: filename };
+  const response = await sendRequest('POST', urlPostLoad, json);
+  return response;
 }
 
 export async function deleteByIdReqest(idsToDelete) {

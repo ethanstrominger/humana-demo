@@ -3,13 +3,15 @@ import React, { Component } from 'react';
 import {
   getQuestionDataToRender,
   createQuestionRequest,
-  deleteByIdReqest
+  deleteByIdReqest,
+  loadFromFileRequest
 } from './AppRequests';
 const MAX_QUESTIONS_TO_DISPLAY = 10;
 const MAX_QUESTIONS_TO_FETCH = 100;
 class App extends Component {
   state = {
     hasDataBeenQueried: 'N',
+    filenameToLoad: null,
     displayData: [],
     fetchDataCount: 0,
     id: 0,
@@ -32,7 +34,7 @@ class App extends Component {
     }
   };
 
-  getDataFromDb = async () => {
+  handleGetDataFromDb = async () => {
     const questionData = await getQuestionDataToRender(
       this.state.fetchQuestionContains
     );
@@ -42,6 +44,12 @@ class App extends Component {
     this.setState({ hasDataBeenQueried: 'Y' });
   };
 
+  handleLoadFromFile = async () => {
+    const response = await loadFromFileRequest(this.state.filenameToLoad);
+    this.showResponse(response);
+    this.handleGetDataFromDb();
+  };
+
   handleCreateQuestion = async () => {
     let response = await createQuestionRequest(
       this.state.questionTextToAdd,
@@ -49,7 +57,7 @@ class App extends Component {
       this.state.distractorsToAdd
     );
     this.showResponse(response);
-    this.getDataFromDb();
+    this.handleGetDataFromDb();
   };
 
   handleDeleteDisplayedRecs = async () => {
@@ -60,12 +68,12 @@ class App extends Component {
     }
     let response = await deleteByIdReqest(idsToDelete);
     this.showResponse(response);
-    this.getDataFromDb();
+    this.handleGetDataFromDb();
   };
 
   render() {
     if (this.state.hasDataBeenQueried === 'N') {
-      this.getDataFromDb();
+      this.handleGetDataFromDb();
     }
     const displayData = this.state.displayData;
     const titleStyle = { color: 'blue' };
@@ -77,7 +85,7 @@ class App extends Component {
       (fetchCount > MAX_QUESTIONS_TO_DISPLAY
         ? ' out of ' + fetchCount + ' records'
         : '') +
-      (fetchCount > MAX_QUESTIONS_TO_FETCH ? ' or more' : '');
+      (fetchCount >= MAX_QUESTIONS_TO_FETCH ? ' or more' : '');
     return (
       <div>
         <ul id='Count-display'>
@@ -107,7 +115,7 @@ class App extends Component {
           />
           <button
             id='Fetch-del.FetchButton'
-            onClick={() => this.getDataFromDb()}
+            onClick={() => this.handleGetDataFromDb()}
           >
             FETCH
           </button>
@@ -144,7 +152,20 @@ class App extends Component {
           />
           <button onClick={() => this.handleCreateQuestion()}>ADD</button>
         </div>
-        <div style={{ padding: '10px' }} />
+        <div id='Load-file' style={{ padding: '10px' }}>
+          <input
+            placeholder='File name (must have been uploaded already)'
+            type='text'
+            onChange={e => this.setState({ filenameToLoad: e.target.value })}
+            style={{ width: '200px' }}
+          />
+          <button
+            id='Load-file.LoadButton'
+            onClick={() => this.handleLoadFromFile()}
+          >
+            LOAD FILE
+          </button>
+        </div>
       </div>
     );
   }

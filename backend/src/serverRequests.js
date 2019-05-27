@@ -7,6 +7,7 @@ const logger = require('morgan');
 const urlPatchDelete = '/patchDeleteQ';
 const urlPostCreate = '/postCreateQ';
 const urlPutFetch = '/putFetchQ';
+const urlPostLoad = '/postLoadQ';
 exports.urlPatchDelete = urlPatchDelete;
 
 const API_PORT = 3001;
@@ -20,6 +21,13 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 // for logging
 app.use(logger('dev'));
+
+router.post(urlPostLoad, async (req, res) => {
+  const retVal = await questionInstance.createQuestionsFromJsonFile(
+    req.body.filename
+  );
+  return res.json(retVal);
+});
 
 router.post(urlPutFetch, async (req, res) => {
   const retVal = await questionInstance.getQuestions(req.body);
