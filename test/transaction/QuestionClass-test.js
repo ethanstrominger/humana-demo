@@ -1,6 +1,6 @@
 const assert = require('assert');
 import Question from '../../backend/src/QuestionClass';
-import { getJsonFromFile } from '../../backend/src/fileConversionUtil';
+import { getJsonFromFile } from '../../backend/src/fileUtil';
 import { makeQuestionJsonArray } from '../../test_functions/testFunctions';
 let questionInstance = new Question();
 

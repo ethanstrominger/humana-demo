@@ -1,4 +1,4 @@
-import { getJsonFromFile } from '../../backend/src/fileConversionUtil';
+import { getJsonFromFile } from './fileUtil';
 
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
