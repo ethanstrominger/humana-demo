@@ -2,7 +2,15 @@
 TOC (Shortcut to update: Ctrl-M T).  Requires vscode plug-in Markdown TOC by
 AlanWalk.  Can be manually updated if you don't have that plug-in.
 -->
-<!-- TOC -->autoauto- [Development Environment](#development-environment)auto    - [Overview](#overview)auto    - [How to Install](#how-to-install)auto    - [How to Start React Server](#how-to-start-react-server)auto    - [How to start backend server](#how-to-start-backend-server)auto    - [How to run tests](#how-to-run-tests)autoauto<!-- /TOC -->
+<!-- TOC -->
+
+- [Overview](#overview)
+- [How to Install](#how-to-install)
+- [How to Start React Server](#how-to-start-react-server)
+- [How to Start Backend Server](#how-to-start-backend-server)
+- [How to Run Tests](#how-to-run-tests)
+
+<!-- /TOC -->
 
 ## Overview
 
@@ -22,13 +30,13 @@ From root directory:
 
 `npm start`<br/>
 
-## How to start backend server
+## How to Start Backend Server
 
 From backend/src directory:
 
 `babel-node serverRequests.js`<br/>
 
-## How to run tests
+## How to Run Tests
 
 From question-app directory:
 
