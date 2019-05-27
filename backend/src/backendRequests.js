@@ -26,7 +26,6 @@ app.use(logger('dev'));
 
 router.get(urlGetFileList, async (req, res) => {
   const retVal = await getDataFiles();
-  console.log(retVal);
   return res.json(retVal);
 });
 

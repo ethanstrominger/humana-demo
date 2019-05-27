@@ -1,4 +1,4 @@
-class simpleClass {
+export default class simpleClass {
   simple() {
     return 'simple';
   }

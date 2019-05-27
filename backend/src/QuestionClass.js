@@ -68,7 +68,6 @@ export default class Question {
   }
 
   async createQuestionsFromJsonFile(fileName) {
-    console.log('*** Loading ***', fileName);
     const json = await getJsonFromFile(fileName);
     const result = await this.deleteAllQuestions();
     const retVal = await this.bulkCreate(json);
