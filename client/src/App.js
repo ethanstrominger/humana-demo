@@ -5,10 +5,13 @@ import {
   createQuestionRequest,
   deleteByIdReqest
 } from './AppRequests';
+const MAX_QUESTIONS_TO_DISPLAY = 10;
+const MAX_QUESTIONS_TO_FETCH = 100;
 class App extends Component {
   state = {
     hasDataBeenQueried: 'N',
-    data: [],
+    displayData: [],
+    fetchDataCount: 0,
     id: 0,
     message: null,
     questionTextToAdd: null,
@@ -33,7 +36,9 @@ class App extends Component {
     const questionData = await getQuestionDataToRender(
       this.state.fetchQuestionContains
     );
-    this.setState({ data: questionData });
+    let questionDataDisplay = questionData.slice(0, MAX_QUESTIONS_TO_DISPLAY);
+    this.setState({ displayData: questionDataDisplay });
+    this.setState({ fetchDataCount: questionData.length });
     this.setState({ hasDataBeenQueried: 'Y' });
   };
 
@@ -48,10 +53,10 @@ class App extends Component {
   };
 
   handleDeleteDisplayedRecs = async () => {
-    let data = this.state.data;
+    let displayData = this.state.displayData;
     let idsToDelete = [];
-    for (let x = 0; x < data.length; x++) {
-      idsToDelete.push(data[x]._id);
+    for (let x = 0; x < displayData.length; x++) {
+      idsToDelete.push(displayData[x]._id);
     }
     let response = await deleteByIdReqest(idsToDelete);
     this.showResponse(response);
@@ -62,14 +67,26 @@ class App extends Component {
     if (this.state.hasDataBeenQueried === 'N') {
       this.getDataFromDb();
     }
-    const data = this.state.data;
+    const displayData = this.state.displayData;
     const titleStyle = { color: 'blue' };
+    const displayCount = displayData.length;
+    const fetchCount = this.state.fetchDataCount;
+    const countMessage =
+      displayCount +
+      ' records displayed' +
+      (fetchCount > MAX_QUESTIONS_TO_DISPLAY
+        ? ' out of ' + fetchCount + ' records'
+        : '') +
+      (fetchCount > MAX_QUESTIONS_TO_FETCH ? ' or more' : '');
     return (
       <div>
+        <ul id='Count-display'>
+          <p>{countMessage}</p>
+        </ul>
         <ul id='Display-records'>
-          {data.length <= 0
+          {displayData.length <= 0
             ? 'NO DB ENTRIES YET'
-            : data.map(dat => (
+            : displayData.map(dat => (
                 <p style={{ 'line-height': 1.0 }} key={dat._id}>
                   <span style={titleStyle}> id: </span> {dat._id}
                   <span style={titleStyle}> text: </span> {dat.questionText}

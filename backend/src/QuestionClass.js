@@ -10,6 +10,7 @@ const QuestionSchema = new Schema({
   distractors: { type: String, required: true }
 });
 
+const MAX_RECORDS_FETCH = 100;
 export default class Question {
   constructor() {
     this.QuestionModel = undefined;
@@ -85,7 +86,7 @@ export default class Question {
 
   async deleteQuestionsByIds(ids) {
     return new Promise((resolve, reject) => {
-      this.QuestionModel.deleteMany({_id: ids}, (err, doc) => {
+      this.QuestionModel.deleteMany({ _id: ids }, (err, doc) => {
         const retVal = this.returnRequestForDoc(err, doc);
         resolve(retVal);
       });
@@ -113,7 +114,7 @@ export default class Question {
       this.QuestionModel.find(questionFilter, (err, doc) => {
         const retVal = this.returnRequestGeneric(err, doc);
         resolve(retVal);
-      });
+      }).limit(MAX_RECORDS_FETCH);
     });
   }
 
