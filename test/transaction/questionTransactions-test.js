@@ -1,14 +1,3 @@
-// const {
-//   startDatabase: startDatabase,
-//   closeDatabase: closeDatabase,
-//   createQuestion: createQuestion,
-//   deleteQuestionById: deleteQuestionById,
-//   getCountAllQuestions: getCountAllQuestions,
-//   deleteAllQuestions: deleteAllQuestions,
-//   loadFile: loadFile,
-//   getJsonFromFile: getJsonFromFile,
-//   QuestionTransactions: QuestionTransactions
-// } = require('../../backend/src/dbTransactions');
 const assert = require('assert');
 import Question from '../../backend/src/QuestionClass';
 import { getJsonFromFile } from '../../backend/src/fileConversionUtil';
@@ -61,7 +50,6 @@ describe('Question Database Tests', function() {
     it('Read delimited file into database', async function() {
       const fileName = './data/test_questions_dump.csv';
       const jsonContents = await getJsonFromFile(fileName);
-      // console.log('Json Contents', jsonContents);
       const retval = await questionInstance.createQuestionsFromJsonFile(
         fileName
       );
@@ -100,6 +88,15 @@ describe('Question Database Tests', function() {
       assert(questionsEqual(createResult.data, deleteResult.data));
     });
 
+    it('Create and get questions', async function() {
+      await questionInstance.createQuestion('What is 5*5?', '25', '0, 10, 1');
+      const start_count = await questionInstance.getCountAllQuestions();
+      assert(start_count > 0);
+      const createResult = await questionInstance.deleteAllQuestions();
+      const end_count = await questionInstance.getCountAllQuestions();
+      assert(end_count == 0);
+    });
+
     it('Delete all questions', async function() {
       await questionInstance.createQuestion('What is 5*5?', '25', '0, 10, 1');
       const start_count = await questionInstance.getCountAllQuestions();
@@ -107,6 +104,57 @@ describe('Question Database Tests', function() {
       const createResult = await questionInstance.deleteAllQuestions();
       const end_count = await questionInstance.getCountAllQuestions();
       assert(end_count == 0);
+    });
+
+    it('Get test: Insert array of json into database, then get', async function() {
+      const bulkJson = makeQuestionJsonArray([
+        ['What is 1*7? ', '7', '8, 6, 17'],
+        ['What is 2*7? ', '14', '9, 5, 27'],
+        ['What is 3*7? ', '21', '10, 4, 37']
+      ]);
+      const insertResult = await questionInstance.bulkCreate(bulkJson);
+      // TODO: Error handing in case insertResult does not succeed
+      const getResult = await questionInstance.getQuestions();
+      const data = getResult.data;
+      assert.equal(data.length, 3);
+    });
+
+    // WIP
+    it('xxxxxxxxxxGet test with filter: Insert array of json into database, then get', async function() {
+      const bulkJson = makeQuestionJsonArray([
+        ['What is 1*7? ', '7', '8, 6, 17'],
+        ['What is 2*7? ', '14', '9, 5, 27'],
+        ['What is 3*9?', '27', '12, 6, 39'],
+        ['What is 3*90?', '270', '93, 87, 390']
+      ]);
+      const insertResult = await questionInstance.bulkCreate(bulkJson);
+
+      console.log('AAAAAAAA');
+      let qStringEsc = 'What is 3*90?'.replace('?', '\\?');
+      console.log('esc****', qStringEsc);
+      let f = { questionTextContains: qStringEsc };
+      console.log(f);
+      let getResult = await questionInstance.getQuestionsF({
+        questionTextContains: qStringEsc
+      });
+      let data = getResult.data;
+      console.log('BBBB', data);
+      assert.equal(data.length, 1);
+      assert.equal(data[0].questionText, 'What is 3*9?');
+
+      getResult = await questionInstance.getQuestions({
+        questionTextContains: '3*9?'
+      });
+      data = getResult.data;
+      assert.equal(data.length, 1);
+      assert.equal(data[0].questionText, 'What is 3*9?');
+
+      getResult = await questionInstance.getQuestions({
+        questionTextContains: '3*9'
+      });
+      data = getResult.data;
+      assert.equal(data.length, 2);
+      // assert.equal(data[0].questionText, 'What is 3*9?');
     });
   });
 
