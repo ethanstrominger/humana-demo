@@ -1,12 +1,5 @@
 import Question from '../../backend/src/QuestionClass';
 let questionInstance = new Question();
-const {
-  deleteQuestionById,
-  createQuestion,
-  startDatabase,
-  getQuestions
-} = require('./dbTransactions');
-
 const express = require('express');
 var cors = require('cors');
 const bodyParser = require('body-parser');
