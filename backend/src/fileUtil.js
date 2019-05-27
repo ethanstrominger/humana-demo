@@ -1,4 +1,5 @@
 const csvtojson = require('csvtojson');
+const fs = require('fs');
 export { getJsonFromFile, getDataFiles };
 
 // TODO: Better way to do this
@@ -10,10 +11,8 @@ function standardizeFieldNamesOfJson(json) {
 }
 
 async function getDataFiles() {
-  var fs = require('fs');
   var files = fs.readdirSync('./data');
   return new Promise((resolve, reject) => {
-    console.log('Files', files);
     resolve(files);
   });
 }
