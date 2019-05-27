@@ -1,9 +1,11 @@
 import Question from '../../backend/src/QuestionClass';
 let questionInstance = new Question();
+import { getDataFiles } from '../../backend/src/fileUtil';
 const express = require('express');
 var cors = require('cors');
 const bodyParser = require('body-parser');
 const logger = require('morgan');
+const urlGetFileList = '/getFileList';
 const urlPatchDelete = '/patchDeleteQ';
 const urlPostCreate = '/postCreateQ';
 const urlPutFetch = '/putFetchQ';
@@ -21,6 +23,12 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 // for logging
 app.use(logger('dev'));
+
+router.get(urlGetFileList, async (req, res) => {
+  const retVal = await getDataFiles();
+  console.log(retVal);
+  return res.json(retVal);
+});
 
 router.post(urlPostLoad, async (req, res) => {
   const retVal = await questionInstance.createQuestionsFromJsonFile(

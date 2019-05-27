@@ -1,8 +1,9 @@
 // TODO: Put this in common f ile
 const urlPatchDelete = '/patchDeleteQ';
+const urlGetFileList = '/getFileList';
 const urlPostCreate = '/postCreateQ';
-const urlPutFetch = '/putFetchQ';
 const urlPostLoad = '/postLoadQ';
+const urlPutFetch = '/putFetchQ';
 
 async function sendRequest(method, urlEnding, json) {
   const jsonString = JSON.stringify(json);
@@ -17,6 +18,13 @@ async function sendRequest(method, urlEnding, json) {
       resolve(responseText);
     };
   });
+}
+
+export async function getFileListRequest() {
+  const json = {};
+  const response = await sendRequest('GET', urlGetFileList, json);
+  console.log('response ============>', response);
+  return response;
 }
 
 export async function loadFromFileRequest(filename) {

@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 
 import {
-  getQuestionDataToRender,
   createQuestionRequest,
   deleteByIdReqest,
+  getFileListRequest,
+  getQuestionDataToRender,
   loadFromFileRequest
 } from './AppRequests';
 const MAX_QUESTIONS_TO_DISPLAY = 10;
@@ -20,7 +21,8 @@ class App extends Component {
     answerToAdd: null,
     distractorsToAdd: null,
     fetchQuestionContains: null,
-    idsToDelete: null
+    idsToDelete: null,
+    backendFileList: ['Hit List button to see list of files']
   };
 
   showResponse = response => {
@@ -42,6 +44,12 @@ class App extends Component {
     this.setState({ displayData: questionDataDisplay });
     this.setState({ fetchDataCount: questionData.length });
     this.setState({ hasDataBeenQueried: 'Y' });
+  };
+
+  handleListDataFiles = async () => {
+    const response = await getFileListRequest(this.state.filenameToLoad);
+    console.log(response);
+    this.setState({ backendFileList: response});
   };
 
   handleLoadFromFile = async () => {
@@ -86,6 +94,7 @@ class App extends Component {
         ? ' out of ' + fetchCount + ' records'
         : '') +
       (fetchCount >= MAX_QUESTIONS_TO_FETCH ? ' or more' : '');
+    const backendFileList = this.state.backendFileList;
     return (
       <div>
         <ul id='Count-display'>
@@ -165,7 +174,21 @@ class App extends Component {
           >
             LOAD FILE
           </button>
+          <button
+            id='Load-file.LoadButton'
+            onClick={() => this.handleListDataFiles()}
+          >
+            LIST FILES
+          </button>
         </div>
+        <ul id='Display-files'>
+          { backendFileList.map(dat => (
+                <p style={{ 'line-height': 1.0 }} key={dat}>
+                  <span style={titleStyle}> file: </span>
+                  {dat}}{dat.distractors}
+                </p>
+              ))}
+        </ul>
       </div>
     );
   }
