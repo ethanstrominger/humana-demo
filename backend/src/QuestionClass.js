@@ -102,9 +102,16 @@ export default class Question {
     });
   }
 
-  getQuestions() {
+  getQuestions(filterParams) {
+    let questionFilter = {};
+    if (filterParams) {
+      if (filterParams.questionTextContains) {
+        let contains = filterParams.questionTextContains;
+        questionFilter = { questionText: new RegExp(contains, 'i') };
+      }
+    }
     return new Promise((resolve, reject) => {
-      this.QuestionModel.find((err, doc) => {
+      this.QuestionModel.find(questionFilter, (err, doc) => {
         const retVal = this.returnRequestGeneric(err, doc);
         resolve(retVal);
       });

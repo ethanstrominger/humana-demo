@@ -129,30 +129,10 @@ describe('Question Database Tests', function() {
       ]);
       const insertResult = await questionInstance.bulkCreate(bulkJson);
 
-      console.log('AAAAAAAA');
-      let qStringEsc = 'What is 3*90?'.replace('?', '\\?');
-      console.log('esc****', qStringEsc);
-      let f = { questionTextContains: qStringEsc };
-      console.log(f);
-      let getResult = await questionInstance.getQuestionsF({
-        questionTextContains: qStringEsc
-      });
-      let data = getResult.data;
-      console.log('BBBB', data);
-      assert.equal(data.length, 1);
-      assert.equal(data[0].questionText, 'What is 3*9?');
-
-      getResult = await questionInstance.getQuestions({
-        questionTextContains: '3*9?'
-      });
-      data = getResult.data;
-      assert.equal(data.length, 1);
-      assert.equal(data[0].questionText, 'What is 3*9?');
-
-      getResult = await questionInstance.getQuestions({
+      let getResult = await questionInstance.getQuestions({
         questionTextContains: '3*9'
       });
-      data = getResult.data;
+      let data = getResult.data;
       assert.equal(data.length, 2);
       // assert.equal(data[0].questionText, 'What is 3*9?');
     });
