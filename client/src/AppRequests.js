@@ -5,20 +5,6 @@ const urlPostCreate = '/postCreateQ';
 const urlPostLoad = '/postLoadQ';
 const urlPutFetch = '/putFetchQ';
 
-async function sendRequest(method, urlEnding, json) {
-  const jsonString = JSON.stringify(json);
-  const theUrl = 'http://localhost:3001/api' + urlEnding;
-  var xmlhttp = new XMLHttpRequest(); // new HttpRequest instance
-  xmlhttp.open(method, theUrl);
-  xmlhttp.setRequestHeader('Content-type', 'application/json');
-  xmlhttp.send(jsonString);
-  return new Promise((resolve, reject) => {
-    xmlhttp.onload = e => {
-      const responseText = JSON.parse(xmlhttp.responseText);
-      resolve(responseText);
-    };
-  });
-}
 
 export async function createQuestionRequest(questionText, answer, distractors) {
   const json = {
@@ -58,4 +44,19 @@ export async function loadFromFileRequest(filename) {
   const json = { filename: filename };
   const response = await sendRequest('POST', urlPostLoad, json);
   return response;
+}
+
+async function sendRequest(method, urlEnding, json) {
+  const jsonString = JSON.stringify(json);
+  const theUrl = 'http://localhost:3001/api' + urlEnding;
+  var xmlhttp = new XMLHttpRequest(); // new HttpRequest instance
+  xmlhttp.open(method, theUrl);
+  xmlhttp.setRequestHeader('Content-type', 'application/json');
+  xmlhttp.send(jsonString);
+  return new Promise((resolve, reject) => {
+    xmlhttp.onload = e => {
+      const responseText = JSON.parse(xmlhttp.responseText);
+      resolve(responseText);
+    };
+  });
 }
