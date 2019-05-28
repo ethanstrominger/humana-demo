@@ -1,38 +1,24 @@
-Get constants from backend
-Pagination
-Show message if http request fails
-Func: Delete all functionality
-Func: specify table in field on form
+Before check-in:
+- Look for console.log
 
-Write tests for end points
-Add test for reaching Limit
-Code coverage
+Technical:
+- Add exception handling for promises
 
-Review console.log
+Functionality:
+- Pagination
+- Show message in UI if http request fails
+- Delete all functionality
+- Update
+- Make db name used configurable, maybe by URL
+
+Tests:
+- UI tests
+- End point tests
+- Add test for reaching Limit
+- Check code coverage
+- Test errors
+- Mock
 
 
 
-Write tests for Get
 
-Questions:
-When do you use import {x} vs import x? 
-
-
-
-
-DONE !!
-Move to class !!
-Get all tests working
-Rename questionTransactions to questionClass
-Change serverRequest to use new function
-Take care of warnings in test
-Figure out how to exclude files from test (simpleFunc)
-Add fetch to UI
-Change delete to only delete fetched records
-Limit to 10 and show number fetched
-Add init button to load data
-Readme.md - point to developer and original Refactor
-Developer - add info on how to start services, how to test, primary libraries - mongoose
-List files to load
-Test for small load
-Cleanup UI

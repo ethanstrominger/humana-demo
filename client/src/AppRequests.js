@@ -1,4 +1,3 @@
-// TODO: Put this in common f ile
 const urlPatchDelete = '/patchDeleteQ';
 const urlGetFileList = '/getFileList';
 const urlPostCreate = '/postCreateQ';
@@ -49,7 +48,7 @@ export async function createQuestionRequest(questionText, answer, distractors) {
   return response;
 }
 
-// TODO: Can this use sendRequest also?
+// TODO: Change to use sendRequest?
 export async function getQuestionDataToRender(questionTextContains) {
   const json = { questionTextContains: questionTextContains };
   const response = await sendRequest('POST', urlPutFetch, json);

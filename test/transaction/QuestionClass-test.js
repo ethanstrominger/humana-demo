@@ -138,7 +138,6 @@ describe('Question Database Tests', function() {
         ['What is 3*7? ', '21', '10, 4, 37']
       ]);
       const insertResult = await questionInstance.bulkCreate(bulkJson);
-      // TODO: Error handing in case insertResult does not succeed
       const getResult = await questionInstance.getQuestions();
       const data = getResult.data;
       assert.equal(data.length, 3);

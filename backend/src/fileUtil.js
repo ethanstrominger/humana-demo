@@ -2,7 +2,7 @@ const csvtojson = require('csvtojson');
 const fs = require('fs');
 export { getJsonFromFile, getDataFiles };
 
-// TODO: Better way to do this
+// TODO: Change header of file instead of changing all the json
 function standardizeFieldNamesOfJson(json) {
   let str = JSON.stringify(json);
   str = str.replace(/\"question\":/g, '"questionText":');

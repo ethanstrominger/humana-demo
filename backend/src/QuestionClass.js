@@ -3,7 +3,6 @@ import { getJsonFromFile } from './fileUtil';
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-// TODO: Use QuestionSchema in getQuestionSchema function
 const QuestionSchema = new Schema({
   questionText: { type: String, required: true },
   answer: { type: String, required: true },
@@ -17,7 +16,6 @@ export default class Question {
   }
 
   async bulkCreate(questionsJson) {
-    // TODO: Clarify when to use QuestionModel vs QuestionModel()
     let data = this.QuestionModel;
     return new Promise((resolve, reject) => {
       data.insertMany(questionsJson, (err, doc) => {
@@ -108,6 +106,8 @@ export default class Question {
     if (filterParams) {
       if (filterParams.questionTextContains) {
         let contains = filterParams.questionTextContains;
+        // TODO: Esc the ? instead of replacing.  ? is a special character to ?
+        contains = contains.replace('?','');
         questionFilter = { questionText: new RegExp(contains, 'i') };
       }
     }
