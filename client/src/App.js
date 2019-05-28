@@ -27,38 +27,6 @@ class App extends Component {
     backendFileList: ['Hit List button to see list of files']
   };
 
-  showResponse = response => {
-    if (!response.success) {
-      let message = response.message;
-      if (response.errorDetail) {
-        console.log('Full error: ' + response.errorDetail);
-        message = message + '  See console log for more detail.';
-      }
-      alert('Failed : ' + message);
-    }
-  };
-
-  handleGetDataFromDb = async () => {
-    const questionData = await getQuestionDataToRender(
-      this.state.fetchQuestionContains
-    );
-    let questionDataDisplay = questionData.slice(0, MAX_QUESTIONS_TO_DISPLAY);
-    this.setState({ displayData: questionDataDisplay });
-    this.setState({ fetchDataCount: questionData.length });
-  };
-
-  handleListDataFiles = async () => {
-    const response = await getFileListRequest(this.state.filenameToLoad);
-    console.log(response);
-    this.setState({ backendFileList: response });
-  };
-
-  handleLoadFromFile = async () => {
-    const response = await loadFromFileRequest(this.state.filenameToLoad);
-    this.showResponse(response);
-    this.handleGetDataFromDb();
-  };
-
   handleCreateQuestion = async () => {
     let response = await createQuestionRequest(
       this.state.questionTextToAdd,
@@ -83,6 +51,38 @@ class App extends Component {
     let response = await deleteByIdsReqest(idsToDelete);
     this.showResponse(response);
     this.handleGetDataFromDb();
+  };
+
+  handleGetDataFromDb = async () => {
+    const questionData = await getQuestionDataToRender(
+      this.state.fetchQuestionContains
+    );
+    let questionDataDisplay = questionData.slice(0, MAX_QUESTIONS_TO_DISPLAY);
+    this.setState({ displayData: questionDataDisplay });
+    this.setState({ fetchDataCount: questionData.length });
+  };
+
+  handleListDataFiles = async () => {
+    const response = await getFileListRequest(this.state.filenameToLoad);
+    console.log(response);
+    this.setState({ backendFileList: response });
+  };
+
+  handleLoadFromFile = async () => {
+    const response = await loadFromFileRequest(this.state.filenameToLoad);
+    this.showResponse(response);
+    this.handleGetDataFromDb();
+  };
+
+  showResponse = response => {
+    if (!response.success) {
+      let message = response.message;
+      if (response.errorDetail) {
+        console.log('Full error: ' + response.errorDetail);
+        message = message + '  See console log for more detail.';
+      }
+      alert('Failed : ' + message);
+    }
   };
 
   render() {
