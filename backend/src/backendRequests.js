@@ -24,25 +24,13 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(logger('dev'));
 
-router.get(urlGetFileList, async (req, res) => {
-  const retVal = await getDataFiles();
-  return res.json(retVal);
-});
-
 router.delete(urlDeleteDeleteAll, async (req, res) => {
   const retVal = await questionInstance.deleteAllQuestions();
   return res.json(retVal);
 });
 
-router.post(urlPostLoad, async (req, res) => {
-  const retVal = await questionInstance.createQuestionsFromJsonFile(
-    req.body.filename
-  );
-  return res.json(retVal);
-});
-
-router.post(urlPutFetch, async (req, res) => {
-  const retVal = await questionInstance.getQuestions(req.body);
+router.get(urlGetFileList, async (req, res) => {
+  const retVal = await getDataFiles();
   return res.json(retVal);
 });
 
@@ -61,8 +49,17 @@ router.post(urlPostCreate, async (req, res) => {
   return res.json(retVal);
 });
 
-// append /api for our http requests
-app.use('/api', router);
+router.post(urlPostLoad, async (req, res) => {
+  const retVal = await questionInstance.createQuestionsFromJsonFile(
+    req.body.filename
+  );
+  return res.json(retVal);
+});
 
-// launch our backend into a port
+router.post(urlPutFetch, async (req, res) => {
+  const retVal = await questionInstance.getQuestions(req.body);
+  return res.json(retVal);
+});
+
+app.use('/api', router);
 app.listen(API_PORT, () => console.log(`LISTENING ON PORT ${API_PORT}`));
