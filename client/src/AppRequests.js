@@ -20,30 +20,6 @@ async function sendRequest(method, urlEnding, json) {
   });
 }
 
-export async function deleteAllRequest() {
-  const json = {};
-  const response = await sendRequest('DELETE', urlDeleteDeleteAll, json);
-  return response;
-}
-
-export async function getFileListRequest() {
-  const json = {};
-  const response = await sendRequest('GET', urlGetFileList, json);
-  return response;
-}
-
-export async function loadFromFileRequest(filename) {
-  const json = { filename: filename };
-  const response = await sendRequest('POST', urlPostLoad, json);
-  return response;
-}
-
-export async function deleteByIdsReqest(idsToDelete) {
-  const json = { id: idsToDelete };
-  const response = await sendRequest('PATCH', urlPatchDelete, json);
-  return response;
-}
-
 export async function createQuestionRequest(questionText, answer, distractors) {
   const json = {
     questionText: questionText,
@@ -54,9 +30,32 @@ export async function createQuestionRequest(questionText, answer, distractors) {
   return response;
 }
 
-// TODO: Change to use sendRequest?
+export async function deleteAllRequest() {
+  const json = {};
+  const response = await sendRequest('DELETE', urlDeleteDeleteAll, json);
+  return response;
+}
+
+export async function deleteByIdsReqest(idsToDelete) {
+  const json = { id: idsToDelete };
+  const response = await sendRequest('PATCH', urlPatchDelete, json);
+  return response;
+}
+
+export async function getFileListRequest() {
+  const json = {};
+  const response = await sendRequest('GET', urlGetFileList, json);
+  return response;
+}
+
 export async function getQuestionDataToRender(questionTextContains) {
   const json = { questionTextContains: questionTextContains };
   const response = await sendRequest('POST', urlPutFetch, json);
   return response['data'];
+}
+
+export async function loadFromFileRequest(filename) {
+  const json = { filename: filename };
+  const response = await sendRequest('POST', urlPostLoad, json);
+  return response;
 }
