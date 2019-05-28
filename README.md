@@ -13,6 +13,7 @@ AlanWalk.  Can be manually updated if you don't have that plug-in.
 - [How to Start React Server](#how-to-start-react-server)
 - [How to Start Backend Server](#how-to-start-backend-server)
 - [How to Run Tests](#how-to-run-tests)
+- [Loading Data from Files](#loading-data-from-files)
 
 <!-- /TOC -->
 
@@ -71,3 +72,7 @@ From backend/src directory:
 From project directory:
 
 `npm test`
+
+## Loading Data from Files
+
+To load files from the UI, copy the files into /backend/src/data and restart the backend server.To load files from the backend,see [CREATEFROMJSONFILE] in /test/transations/QuestionClass-tests.js for an example how to do this.
