@@ -25,29 +25,6 @@ export default class Question {
     });
   }
 
-  async getQuestionSchema() {
-    return new Promise((resolve, reject) => {
-      let retVal = undefined;
-      try {
-        retVal = mongoose.model('Question');
-        resolve(retVal);
-      } catch (e) {
-        if (e.name === 'MissingSchemaError') {
-          let schema = QuestionSchema;
-          // let schema = new Schema({
-          //   questionText: { type: String, required: true },
-          //   answer: { type: String, required: true },
-          //   distractors: { type: String, required: true }
-          // });
-          retVal = mongoose.model('Question', schema);
-          resolve(retVal);
-        } else {
-          throw e;
-        }
-      }
-    });
-  }
-
   async closeDatabase(env) {
     mongoose.connection.close();
   }
@@ -107,7 +84,7 @@ export default class Question {
       if (filterParams.questionTextContains) {
         let contains = filterParams.questionTextContains;
         // TODO: Esc the ? instead of replacing.  ? is a special character to ?
-        contains = contains.replace('?','');
+        contains = contains.replace('?', '');
         questionFilter = { questionText: new RegExp(contains, 'i') };
       }
     }
@@ -116,6 +93,29 @@ export default class Question {
         const retVal = this.returnRequestGeneric(err, doc);
         resolve(retVal);
       }).limit(MAX_RECORDS_FETCH);
+    });
+  }
+
+  async getQuestionSchema() {
+    return new Promise((resolve, reject) => {
+      let retVal = undefined;
+      try {
+        retVal = mongoose.model('Question');
+        resolve(retVal);
+      } catch (e) {
+        if (e.name === 'MissingSchemaError') {
+          let schema = QuestionSchema;
+          // let schema = new Schema({
+          //   questionText: { type: String, required: true },
+          //   answer: { type: String, required: true },
+          //   distractors: { type: String, required: true }
+          // });
+          retVal = mongoose.model('Question', schema);
+          resolve(retVal);
+        } else {
+          throw e;
+        }
+      }
     });
   }
 
