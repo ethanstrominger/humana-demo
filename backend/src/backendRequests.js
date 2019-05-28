@@ -5,6 +5,7 @@ const express = require('express');
 var cors = require('cors');
 const bodyParser = require('body-parser');
 const logger = require('morgan');
+const urlDeleteDeleteAll = '/deleteDeleteAll';
 const urlGetFileList = '/getFileList';
 const urlPatchDelete = '/patchDeleteQ';
 const urlPostCreate = '/postCreateQ';
@@ -16,16 +17,20 @@ const API_PORT = 3001;
 const app = express();
 app.use(cors());
 const router = express.Router();
-questionInstance.startDatabase('prod');
+questionInstance.startDatabase('demo');
 // TODO: Understand
 // bodyParser, parses the request body to be a readable json format
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-// for logging
 app.use(logger('dev'));
 
 router.get(urlGetFileList, async (req, res) => {
   const retVal = await getDataFiles();
+  return res.json(retVal);
+});
+
+router.delete(urlDeleteDeleteAll, async (req, res) => {
+  const retVal = await questionInstance.deleteAllQuestions();
   return res.json(retVal);
 });
 

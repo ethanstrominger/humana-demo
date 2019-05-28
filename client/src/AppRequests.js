@@ -1,5 +1,6 @@
-const urlPatchDelete = '/patchDeleteQ';
+const urlDeleteDeleteAll = '/deleteDeleteAll';
 const urlGetFileList = '/getFileList';
+const urlPatchDelete = '/patchDeleteQ';
 const urlPostCreate = '/postCreateQ';
 const urlPostLoad = '/postLoadQ';
 const urlPutFetch = '/putFetchQ';
@@ -19,10 +20,15 @@ async function sendRequest(method, urlEnding, json) {
   });
 }
 
+export async function deleteAllRequest() {
+  const json = {};
+  const response = await sendRequest('DELETE', urlDeleteDeleteAll, json);
+  return response;
+}
+
 export async function getFileListRequest() {
   const json = {};
   const response = await sendRequest('GET', urlGetFileList, json);
-  console.log('response ============>', response);
   return response;
 }
 
@@ -32,7 +38,7 @@ export async function loadFromFileRequest(filename) {
   return response;
 }
 
-export async function deleteByIdReqest(idsToDelete) {
+export async function deleteByIdsReqest(idsToDelete) {
   const json = { id: idsToDelete };
   const response = await sendRequest('PATCH', urlPatchDelete, json);
   return response;

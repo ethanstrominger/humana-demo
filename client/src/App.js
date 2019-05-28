@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 
 import {
   createQuestionRequest,
-  deleteByIdReqest,
+  deleteByIdsReqest,
+  deleteAllRequest,
   getFileListRequest,
   getQuestionDataToRender,
   loadFromFileRequest
@@ -68,13 +69,18 @@ class App extends Component {
     this.handleGetDataFromDb();
   };
 
+  handleDeleteAll = async () => {
+    await deleteAllRequest();
+    this.handleGetDataFromDb();
+  };
+
   handleDeleteDisplayedRecs = async () => {
     let displayData = this.state.displayData;
     let idsToDelete = [];
     for (let x = 0; x < displayData.length; x++) {
       idsToDelete.push(displayData[x]._id);
     }
-    let response = await deleteByIdReqest(idsToDelete);
+    let response = await deleteByIdsReqest(idsToDelete);
     this.showResponse(response);
     this.handleGetDataFromDb();
   };
@@ -181,6 +187,14 @@ class App extends Component {
             onClick={() => this.handleListDataFiles()}
           >
             LIST FILES
+          </button>
+        </div>
+        <div id='Delete-all' style={{ padding: '10px' }}>
+          <button
+            id='Delete-all.DeleteAllButton'
+            onClick={() => this.handleDeleteAll()}
+          >
+            DELETE ALL
           </button>
         </div>
         <ul id='Display-files'>
