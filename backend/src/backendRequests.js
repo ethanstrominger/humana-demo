@@ -45,7 +45,7 @@ router.post(urlPostProductQuery, async (req, res) => {
 
 async function getProductQuery(json) {
   const addressStart = 'https://api.fda.gov/drug/ndc.json?search=brand_name:"';
-  const addressEnd = '"&limit=2';
+  const addressEnd = '"&limit=10';
   const url = addressStart + json.brandName + addressEnd;
   const result = await getRequest(url);
   console.log('JSON: ', json);

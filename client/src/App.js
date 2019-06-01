@@ -213,20 +213,24 @@ class App extends Component {
             QUERY
           </button>
         </div>
-        <div id='Delete-all' style={{ padding: '10px' }}>
-          <button
-            id='Delete-all.DeleteAllButton'
-            onClick={() => this.handleDeleteAll()}
-          >
-            DELETE ALL
-          </button>
-        </div>
         <ul id='Display-records'>
           {fdaResults.length <= 0
             ? 'NO FDA RESULTS YET'
             : fdaResults.map(dat2 => (
-                <p style={{ 'line-height': 1.0 }} key={'123'}>
-                  <span style={titleStyle}> text: </span> {dat2.generic_name}
+                <p style={{ 'line-height': 1.0 }}>
+                <span style={titleStyle}> NDC: </span>{' '}
+                {dat2.product_ndc}
+
+                <span style={titleStyle}> Comp: </span>{' '}
+                {dat2.labeler_name}
+                <span style={titleStyle}> Form: </span>{' '}
+                {dat2.dosage_form}
+                <span style={titleStyle}> G: </span>{' '}
+                {dat2.generic_name}
+                  <span style={titleStyle}> Brand: </span>{' '}
+                  {dat2.brand_name}
+                  <span style={titleStyle}> Ing: </span>{' '}
+                  {dat2.active_ingredients[0].name} {dat2.active_ingredients[0].strength}
                 </p>
               ))}
         </ul>
