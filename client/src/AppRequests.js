@@ -4,12 +4,31 @@ const urlPatchDelete = '/patchDeleteQ';
 const urlPostCreate = '/postCreateQ';
 const urlPostLoad = '/postLoadQ';
 const urlPutFetch = '/putFetchQ';
+const urlPostProductQuery = '/postProductQuery';
 
-export async function createQuestionRequest(code, name, dose) {
+export async function productQueryRequest(brandName) {
+  const json = {
+    brandName: brandName
+  };
+
+  const response = await sendRequest('POST', urlPostProductQuery, json);
+  console.log("RESPONSE:", response)
+  return response;
+}
+
+export async function createQuestionRequest(
+  code,
+  name,
+  dose,
+  number_of_pills,
+  perday
+) {
   const json = {
     code: code,
     name: name,
-    dose: dose
+    dose: dose,
+    number_of_pills: number_of_pills,
+    perday: perday
   };
   const response = await sendRequest('POST', urlPostCreate, json);
   return response;

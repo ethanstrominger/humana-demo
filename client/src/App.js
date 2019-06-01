@@ -4,17 +4,15 @@ import {
   createQuestionRequest,
   deleteByIdsReqest,
   deleteAllRequest,
-  getFileListRequest,
   getQuestionDataToRender,
-  loadFromFileRequest
+  productQueryRequest
 } from './AppRequests';
 const MAX_QUESTIONS_TO_DISPLAY = 10;
 const MAX_QUESTIONS_TO_FETCH = 100;
 class App extends Component {
   state = {
     hasDataBeenQueried: 'N',
-    filenameToLoad: null,
-    isFilesListed: 'N',
+    productQueryValue: null,
     displayData: [],
     fetchDataCount: 0,
     id: 0,
@@ -22,16 +20,20 @@ class App extends Component {
     codeToAdd: null,
     nameToAdd: null,
     doseToAdd: null,
+    number_of_pillsToAdd: null,
+    perdayToAdd: null,
     fetchQuestionContains: null,
     idsToDelete: null,
-    backendFileList: ['Hit List button to see list of files']
+    fdaResults: []
   };
 
   handleCreateQuestion = async () => {
     let response = await createQuestionRequest(
       this.state.codeToAdd,
       this.state.nameToAdd,
-      this.state.doseToAdd
+      this.state.doseToAdd,
+      this.state.number_of_pillsToAdd,
+      this.state.perdayToAdd
     );
     this.showResponse(response);
     this.handleGetDataFromDb();
@@ -62,16 +64,14 @@ class App extends Component {
     this.setState({ fetchDataCount: questionData.length });
   };
 
-  handleListDataFiles = async () => {
-    const response = await getFileListRequest(this.state.filenameToLoad);
-    console.log(response);
-    this.setState({ backendFileList: response });
-  };
-
-  handleLoadFromFile = async () => {
-    const response = await loadFromFileRequest(this.state.filenameToLoad);
-    this.showResponse(response);
-    this.handleGetDataFromDb();
+  handleProductQuery = async () => {
+    const response = await productQueryRequest(this.state.productQueryValue);
+    let fdaResults = response.results;
+    if (fdaResults) {
+      this.setState({ fdaResults: fdaResults });
+    }
+    // this.showResponse(response);
+    // this.handleGetDataFromDb();
   };
 
   showResponse = response => {
@@ -88,10 +88,10 @@ class App extends Component {
   render() {
     if (this.state.hasDataBeenQueried === 'N') {
       this.handleGetDataFromDb();
-      this.handleListDataFiles();
       this.setState({ hasDataBeenQueried: 'Y' });
     }
     const displayData = this.state.displayData;
+    const fdaResults = this.state.fdaResults;
     const titleStyle = { color: 'blue' };
     const displayCount = displayData.length;
     const fetchCount = this.state.fetchDataCount;
@@ -102,7 +102,6 @@ class App extends Component {
         ? ' out of ' + fetchCount + ' records'
         : '') +
       (fetchCount >= MAX_QUESTIONS_TO_FETCH ? ' or more' : '');
-    const backendFileList = this.state.backendFileList;
     return (
       <div>
         <ul id='Count-display'>
@@ -117,12 +116,16 @@ class App extends Component {
                   <span style={titleStyle}> text: </span> {dat.code}
                   <span style={titleStyle}> name: </span> {dat.name}{' '}
                   <span style={titleStyle}> dose: </span> {dat.dose}
+                  <span style={titleStyle}> number_of_pills: </span>{' '}
+                  {dat.number_of_pills}
+                  <span style={titleStyle}> perday: </span> {dat.perday}
                 </p>
               ))}
         </ul>
         <div id='Fetch-delete' style={{ padding: '10px' }}>
+          name contains:
           <input
-            placeholder='Question text contains'
+            placeholder='Name contains'
             type='text'
             onChange={e =>
               this.setState({ fetchQuestionContains: e.target.value })
@@ -145,13 +148,16 @@ class App extends Component {
           </button>
         </div>
         <div id='Add' style={{ padding: '10px' }}>
+          code:
           <input
             id='Add.question-text'
-            placeholder='Question Text to Add'
+            placeholder='Code to Add'
             type='text'
             onChange={e => this.setState({ codeToAdd: e.target.value })}
             style={{ width: '200px' }}
           />
+          <br />
+          name:
           <input
             id='Add.name'
             placeholder='name'
@@ -159,6 +165,8 @@ class App extends Component {
             onChange={e => this.setState({ nameToAdd: e.target.value })}
             style={{ width: '200px' }}
           />
+          <br />
+          dose in mg:
           <input
             id='Add.dose'
             placeholder='dose'
@@ -166,26 +174,43 @@ class App extends Component {
             onChange={e => this.setState({ doseToAdd: e.target.value })}
             style={{ width: '200px' }}
           />
+          <br />
+          dose as # of pills:
+          <input
+            id='Add.number_of_pills'
+            placeholder='number_of_pills'
+            type='text'
+            onChange={e =>
+              this.setState({ number_of_pillsToAdd: e.target.value })
+            }
+            style={{ width: '200px' }}
+          />
+          <br />
+          doses per day:
+          <input
+            id='Add.perday'
+            placeholder='perday'
+            type='text'
+            onChange={e => this.setState({ perdayToAdd: e.target.value })}
+            style={{ width: '200px' }}
+          />
+          <br />
           <button onClick={() => this.handleCreateQuestion()}>ADD</button>
         </div>
-        <div id='Load-file' style={{ padding: '10px' }}>
+        <div id='product-query' style={{ padding: '10px' }}>
+          <br />
+          lookup by product name:
           <input
-            placeholder='File name (must have been uploaded already)'
+            placeholder='product name'
             type='text'
-            onChange={e => this.setState({ filenameToLoad: e.target.value })}
+            onChange={e => this.setState({ productQueryValue: e.target.value })}
             style={{ width: '200px' }}
           />
           <button
-            id='Load-file.LoadButton'
-            onClick={() => this.handleLoadFromFile()}
+            id='product-query.LoadButton'
+            onClick={() => this.handleProductQuery()}
           >
-            LOAD FILE
-          </button>
-          <button
-            id='Load-file.LoadButton'
-            onClick={() => this.handleListDataFiles()}
-          >
-            LIST FILES
+            QUERY
           </button>
         </div>
         <div id='Delete-all' style={{ padding: '10px' }}>
@@ -196,12 +221,14 @@ class App extends Component {
             DELETE ALL
           </button>
         </div>
-        <ul id='Display-files'>
-          {backendFileList.map(dat => (
-            <p style={{ 'line-height': 1.0 }} key={dat}>
-              {dat}
-            </p>
-          ))}
+        <ul id='Display-records'>
+          {fdaResults.length <= 0
+            ? 'NO FDA RESULTS YET'
+            : fdaResults.map(dat2 => (
+                <p style={{ 'line-height': 1.0 }} key={'123'}>
+                  <span style={titleStyle}> text: </span> {dat2.generic_name}
+                </p>
+              ))}
         </ul>
       </div>
     );

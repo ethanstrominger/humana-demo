@@ -1,3 +1,4 @@
+var XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
 import Question from './QuestionClass';
 let questionInstance = new Question();
 import { getDataFiles } from './fileUtil';
@@ -11,6 +12,8 @@ const urlPatchDelete = '/patchDeleteQ';
 const urlPostCreate = '/postCreateQ';
 const urlPutFetch = '/putFetchQ';
 const urlPostLoad = '/postLoadQ';
+const urlPostProductQuery = '/postProductQuery';
+
 exports.urlPatchDelete = urlPatchDelete;
 
 const API_PORT = 3001;
@@ -34,6 +37,36 @@ router.get(urlGetFileList, async (req, res) => {
   return res.json(retVal);
 });
 
+router.post(urlPostProductQuery, async (req, res) => {
+  console.log('REQUEST BODY: ', req.body);
+  const retVal = await getProductQuery(req.body);
+  return res.json(retVal);
+});
+
+async function getProductQuery(json) {
+  const addressStart = 'https://api.fda.gov/drug/ndc.json?search=brand_name:"';
+  const addressEnd = '"&limit=2';
+  const url = addressStart + json.brandName + addressEnd;
+  const result = await getRequest(url);
+  console.log('JSON: ', json);
+  console.log('URL: ', url);
+  console.log('RESULT: ', result);
+  return result;
+}
+
+async function getRequest(myUrl) {
+  var xmlhttp = new XMLHttpRequest(); // new HttpRequest instance
+  xmlhttp.open('GET', myUrl);
+  xmlhttp.setRequestHeader('Content-type', 'application/json');
+  xmlhttp.send({});
+  return new Promise((resolve, reject) => {
+    xmlhttp.onload = e => {
+      const responseText = JSON.parse(xmlhttp.responseText);
+      resolve(responseText);
+    };
+  });
+}
+
 // xmlhttp delete does not send body
 router.patch(urlPatchDelete, async (req, res) => {
   const retVal = await questionInstance.deleteQuestionsByIds(req.body.id);
@@ -42,7 +75,6 @@ router.patch(urlPatchDelete, async (req, res) => {
 
 router.post(urlPostCreate, async (req, res) => {
   const retVal = await questionInstance.createQuestion(
-
     req.body.name,
     req.body.code,
     req.body.dose,
