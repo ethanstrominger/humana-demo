@@ -19,9 +19,9 @@ class App extends Component {
     fetchDataCount: 0,
     id: 0,
     message: null,
-    questionTextToAdd: null,
-    answerToAdd: null,
-    distractorsToAdd: null,
+    codeToAdd: null,
+    nameToAdd: null,
+    doseToAdd: null,
     fetchQuestionContains: null,
     idsToDelete: null,
     backendFileList: ['Hit List button to see list of files']
@@ -29,9 +29,9 @@ class App extends Component {
 
   handleCreateQuestion = async () => {
     let response = await createQuestionRequest(
-      this.state.questionTextToAdd,
-      this.state.answerToAdd,
-      this.state.distractorsToAdd
+      this.state.codeToAdd,
+      this.state.nameToAdd,
+      this.state.doseToAdd
     );
     this.showResponse(response);
     this.handleGetDataFromDb();
@@ -114,10 +114,9 @@ class App extends Component {
             : displayData.map(dat => (
                 <p style={{ 'line-height': 1.0 }} key={dat._id}>
                   <span style={titleStyle}> id: </span> {dat._id}
-                  <span style={titleStyle}> text: </span> {dat.questionText}
-                  <span style={titleStyle}> answer: </span> {dat.answer}{' '}
-                  <span style={titleStyle}> distractors: </span>{' '}
-                  {dat.distractors}
+                  <span style={titleStyle}> text: </span> {dat.code}
+                  <span style={titleStyle}> name: </span> {dat.name}{' '}
+                  <span style={titleStyle}> dose: </span> {dat.dose}
                 </p>
               ))}
         </ul>
@@ -150,21 +149,21 @@ class App extends Component {
             id='Add.question-text'
             placeholder='Question Text to Add'
             type='text'
-            onChange={e => this.setState({ questionTextToAdd: e.target.value })}
+            onChange={e => this.setState({ codeToAdd: e.target.value })}
             style={{ width: '200px' }}
           />
           <input
-            id='Add.answer'
-            placeholder='Answer'
+            id='Add.name'
+            placeholder='name'
             type='text'
-            onChange={e => this.setState({ answerToAdd: e.target.value })}
+            onChange={e => this.setState({ nameToAdd: e.target.value })}
             style={{ width: '200px' }}
           />
           <input
-            id='Add.distractors'
-            placeholder='Distractors'
+            id='Add.dose'
+            placeholder='dose'
             type='text'
-            onChange={e => this.setState({ distractorsToAdd: e.target.value })}
+            onChange={e => this.setState({ doseToAdd: e.target.value })}
             style={{ width: '200px' }}
           />
           <button onClick={() => this.handleCreateQuestion()}>ADD</button>

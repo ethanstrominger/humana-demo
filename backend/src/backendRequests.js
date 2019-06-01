@@ -42,9 +42,12 @@ router.patch(urlPatchDelete, async (req, res) => {
 
 router.post(urlPostCreate, async (req, res) => {
   const retVal = await questionInstance.createQuestion(
-    req.body.questionText,
-    req.body.answer,
-    req.body.distractors
+
+    req.body.name,
+    req.body.code,
+    req.body.dose,
+    req.body.number_of_pills,
+    req.body.perday
   );
   return res.json(retVal);
 });

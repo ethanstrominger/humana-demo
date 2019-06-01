@@ -4,9 +4,14 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const QuestionSchema = new Schema({
-  questionText: { type: String, required: true },
-  answer: { type: String, required: true },
-  distractors: { type: String, required: true }
+  //
+  // code,name,dose,number_of_pills,perday
+
+  code: { type: String, required: true },
+  name: { type: String, required: true },
+  dose: { type: String, required: true },
+  number_of_pills: { type: String, required: true },
+  perday: { type: String, required: true }
 });
 
 const MAX_RECORDS_FETCH = 100;
@@ -29,11 +34,13 @@ export default class Question {
     mongoose.connection.close();
   }
 
-  createQuestion(questionText, answer, distractors) {
+  createQuestion(code, name, dose, number_of_pills, perday) {
     let data = this.QuestionModel();
-    data.questionText = questionText;
-    data.answer = answer;
-    data.distractors = distractors;
+    (data.code = code), (data.name = name);
+    data.dose = dose;
+    data.number_of_pills = number_of_pills;
+    data.perday = perday;
+
     return new Promise((resolve, reject) => {
       data.save((err, doc) => {
         const retVal = this.returnRequestForDoc(err, doc);
@@ -81,11 +88,11 @@ export default class Question {
   getQuestions(filterParams) {
     let questionFilter = {};
     if (filterParams) {
-      if (filterParams.questionTextContains) {
-        let contains = filterParams.questionTextContains;
+      if (filterParams.codeContains) {
+        let contains = filterParams.codeContains;
         // TODO: Esc the ? instead of replacing.  ? is a special character to ?
         contains = contains.replace('?', '');
-        questionFilter = { questionText: new RegExp(contains, 'i') };
+        questionFilter = { code: new RegExp(contains, 'i') };
       }
     }
     return new Promise((resolve, reject) => {
@@ -100,17 +107,17 @@ export default class Question {
     return new Promise((resolve, reject) => {
       let retVal = undefined;
       try {
-        retVal = mongoose.model('Question');
+        retVal = mongoose.model('Med');
         resolve(retVal);
       } catch (e) {
         if (e.name === 'MissingSchemaError') {
           let schema = QuestionSchema;
           // let schema = new Schema({
-          //   questionText: { type: String, required: true },
-          //   answer: { type: String, required: true },
-          //   distractors: { type: String, required: true }
+          //   code: { type: String, required: true },
+          //   name: { type: String, required: true },
+          //   dose: { type: String, required: true }
           // });
-          retVal = mongoose.model('Question', schema);
+          retVal = mongoose.model('Med', schema);
           resolve(retVal);
         } else {
           throw e;
@@ -129,7 +136,7 @@ export default class Question {
     } else if (!doc) {
       return { success: false, message: 'No record found.' };
     } else {
-      const message = 'Doc ' + doc.questionText + ' processed.';
+      const message = 'Doc ' + doc.code + ' processed.';
       return { success: true, message: message, data: doc };
     }
   }

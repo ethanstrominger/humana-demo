@@ -5,12 +5,11 @@ const urlPostCreate = '/postCreateQ';
 const urlPostLoad = '/postLoadQ';
 const urlPutFetch = '/putFetchQ';
 
-
-export async function createQuestionRequest(questionText, answer, distractors) {
+export async function createQuestionRequest(code, name, dose) {
   const json = {
-    questionText: questionText,
-    answer: answer,
-    distractors: distractors
+    code: code,
+    name: name,
+    dose: dose
   };
   const response = await sendRequest('POST', urlPostCreate, json);
   return response;
@@ -34,8 +33,8 @@ export async function getFileListRequest() {
   return response;
 }
 
-export async function getQuestionDataToRender(questionTextContains) {
-  const json = { questionTextContains: questionTextContains };
+export async function getQuestionDataToRender(codeContains) {
+  const json = { codeContains: codeContains };
   const response = await sendRequest('POST', urlPutFetch, json);
   return response['data'];
 }
